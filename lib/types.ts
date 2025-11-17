@@ -1,0 +1,1 @@
+// BookingProps type to add a new booking
