@@ -1,6 +1,6 @@
 
 import { User } from "@supabase/supabase-js";
-import { SupabaseClient } from "./supabaseClient";
+import { SupabaseClient } from "../utils/supabaseClient";
 
 // Get the role to display different ui in certain scenarios
 export const getProfileData = async () => {
