@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { navbarItems } from "@/data/data"
 import { Button } from "@mantine/core"
-import { LogOutIcon } from "lucide-react"
 
 const Sidebar = () => {
   return (
