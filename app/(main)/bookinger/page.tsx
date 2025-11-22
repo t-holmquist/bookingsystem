@@ -3,7 +3,7 @@ import React from 'react'
 
 const Bookinger = () => {
   return (
-    <div className="flex h-screen bg-white p-8">
+    <div className="flex flex-col h-screen bg-white p-8">
       <Header title="Dine bookinger"/> 
   </div>
   )
