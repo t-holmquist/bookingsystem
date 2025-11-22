@@ -13,9 +13,9 @@ const HjaelpSide = () => {
             <h3 className="font-semibold mb-2">
               {instruction.step}. {instruction.title}
             </h3>
-            <p className="text-gray-700">
+            <div className="text-gray-700">
               {instruction.description}
-            </p>
+            </div>
           </div>
         ))}
       </div>
