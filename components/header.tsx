@@ -7,7 +7,7 @@ const Header = ({ title }: { title: string }) => {
       <h1 className="text-3xl font-bold">{title}</h1>
       <div className="flex gap-2 w-fit bg-[#ebfbee] items-center py-1 px-2 rounded-md">
         <ActiveIndicator />
-        <p className="text-xs">Logged ind som student</p>
+        <p className="text-xs">Logget ind som studerende</p>
       </div>
     </div>
   )
