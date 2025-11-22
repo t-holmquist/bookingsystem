@@ -1,9 +1,17 @@
+'use client'
+
 import Image from "next/image"
 import Link from "next/link"
 import { navbarItems } from "@/data/data"
 import { Button } from "@mantine/core"
+import { usePathname } from "next/navigation"
 
 const Sidebar = () => {
+
+  // Pathname hook to check for current pathname and change styling on navitems
+  const pathname = usePathname()
+
+
   return (
     <section className="bg-ek-desert justify-between w-1/5 h-screen p-3 flex flex-col">
       {/* Logo and title */}
@@ -21,7 +29,7 @@ const Sidebar = () => {
               <Link
                 key={idx}
                 href={href}
-                className="flex items-center gap-2 p-2 hover:bg-ek-hover rounded-md"
+                className={`flex ${pathname === href && 'bg-ek-hover'} items-center gap-2 p-2 rounded-md`}
               >
                 <div className="bg-[#E7F5FF] rounded-md p-2 border border-gray-300">
                   <Icon size={20} className="text-ek-blue" />
@@ -45,7 +53,7 @@ const Sidebar = () => {
           <p className="text-sm font-bold">Gwen Stefani</p>
           <p className="text-ek-text-grey text-xs">Studerende</p>
           <p className="text-ek-text-grey text-xs">gwen@example.com</p>
-          <Button color="black">Log ud</Button>
+          <Button color="black" size="xs">Log ud</Button>
         </div>
       </div>
     </section>
