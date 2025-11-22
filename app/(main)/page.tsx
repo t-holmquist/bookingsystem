@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-white p-8">
       <Header title="Book et lokale" />
-      <section className="mt-14 gap-10 flex flex-col h-full justify-between">
+      <section className="mt-10 gap-10 flex flex-col h-full justify-between">
         {/* Filter section */}
         <FilterSection />
         {/* Room result list section */}
