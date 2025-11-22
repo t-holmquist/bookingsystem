@@ -1,0 +1,38 @@
+import React from 'react'
+
+const FilterSection = () => {
+  return (
+    <div className='w-full rounded-3xl border border-gray-400 py-5 px-8'>
+        <h2 className='text-xl font-semibold'>Filter</h2>
+        {/* Filter section */}
+        <section className='mt-8 flex justify-between items-center'>
+            {/* Floor */}
+            <div className='space-y-2'>
+                <h3>Etage</h3>
+                <p className='text-ek-text-grey text-sm'>Vælg den ønskede etage</p>
+                <p>Input felt her</p>
+            </div>
+            {/* Date */}
+            <div className='space-y-2'>
+                <h3>Dato</h3>
+                <p className='text-ek-text-grey text-sm'>Vælg den ønskede dato</p>
+                <p>Input felt her</p>
+            </div>
+            {/* Start time */}
+            <div className='space-y-2'>
+                <h3>Tidspunkt fra</h3>
+                <p className='text-ek-text-grey text-sm'>Vælg det ønskede tidspunkt</p>
+                <p>Input felt her</p>
+            </div>
+            {/* End time */}
+            <div className='space-y-2'>
+                <h3>Tidspunkt til</h3>
+                <p className='text-ek-text-grey text-sm'>Vælg det ønskede tidspunkt</p>
+                <p>Input felt her</p>
+            </div>
+        </section>
+    </div>
+  )
+}
+
+export default FilterSection
