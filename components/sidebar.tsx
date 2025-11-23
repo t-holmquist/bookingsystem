@@ -16,12 +16,16 @@ const Sidebar = () => {
     undefined
   )
   const [isLoading, setIsLoading] = useState(false)
+  const [userImageUrl, setUserImageUrl] = useState("")
+
+  // The supabase client
+  const supabase = SupabaseClient()
 
   // Pathname hook to check for current pathname and change styling on navitems
   const pathname = usePathname()
   const router = useRouter()
 
-  // Get the user profile information on mount
+  // Get the user profile information on mount including the profile image
   useEffect(() => {
     const getUserData = async () => {
       // Get the profile data from supabase. Returns only one object from the authorized user
@@ -29,6 +33,16 @@ const Sidebar = () => {
 
       if (userData) {
         setProfileData(userData)
+
+        // Get the profile image from the supabase storage. Send in the user id, since the files are named that way.
+        // Gets a url from the file in supabase that i can use as the user image
+        const { data: userImage } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(`/${userData.user_id}.jpg`)
+
+        if (userImage) {
+          setUserImageUrl(userImage.publicUrl)
+        }
       }
     }
 
@@ -38,8 +52,6 @@ const Sidebar = () => {
   // Signs the user out
   const handleSignOut = async () => {
     try {
-      const supabase = SupabaseClient()
-
       // Set loading state
       setIsLoading(true)
 
@@ -94,10 +106,10 @@ const Sidebar = () => {
         </div>
       </div>
       {/* User information */}
-      {profileData && (
+      {profileData && userImageUrl && (
         <div className="flex gap-3 items-center">
           <Image
-            src={"/mock_user.jpg"}
+            src={userImageUrl}
             width={120}
             height={100}
             alt="mock user"
@@ -109,7 +121,12 @@ const Sidebar = () => {
               {profileData.role === "teacher" ? "Lærer" : "Studerende"}
             </p>
             <p className="text-ek-text-grey text-xs">{profileData.email}</p>
-            <Button loading={isLoading} onClick={handleSignOut} color="black" size="xs">
+            <Button
+              loading={isLoading}
+              onClick={handleSignOut}
+              color="black"
+              size="xs"
+            >
               Log ud
             </Button>
           </div>
