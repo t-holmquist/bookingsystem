@@ -15,7 +15,7 @@ export default function SignInForm() {
   // State variables for email/password
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [isLoading, setIsLoading] = useState<Boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // Routing to redirect the user if the succesfully logged in
   const router = useRouter()
@@ -69,7 +69,7 @@ export default function SignInForm() {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-          <Button type="submit" color="#0339A7" fullWidth mt="xl" radius="md">
+          <Button loading={isLoading} type="submit" color="#0339A7" fullWidth mt="xl" radius="md">
             Sign in
           </Button>
         </Paper>
