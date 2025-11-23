@@ -1,6 +1,5 @@
 import SignInForm from "@/components/SignInForm"
 import Image from "next/image"
-import React from "react"
 
 const SignIn = () => {
   return (

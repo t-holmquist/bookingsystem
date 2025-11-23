@@ -1,5 +1,6 @@
-'use client'
+"use client"
 
+import { SupabaseClient } from "@/utils/supabaseClient"
 import {
   Button,
   Container,
@@ -7,15 +8,44 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function SignInForm() {
+  // State variables for email/password
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [isLoading, setIsLoading] = useState<Boolean>(false)
 
+  // Routing to redirect the user if the succesfully logged in
+  const router = useRouter()
 
-  // Sign in handler
   const handleSignIn = async (e: any) => {
     e.preventDefault()
 
-    console.log("Signed in")
+    // TRYING TO SIGN IN HERE
+    try {
+      setIsLoading(true)
+
+      // Get the supabase client
+      const supabase = SupabaseClient()
+
+      // Try to log the user in if there exist a user it succeds
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
+
+      // If we get a token then we succeded and we can redirect to teacher dashboard
+      // Redirecting to the specific dynamic user id. We get the user id back from supabase.
+      if (data && data?.session?.access_token) {
+        router.push(`/`)
+      }
+    } catch (error) {
+      console.log("Error logging in the user", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -27,6 +57,8 @@ export default function SignInForm() {
             placeholder="you@mantine.dev"
             required
             radius="md"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
           />
           <PasswordInput
             label="Password"
@@ -34,6 +66,8 @@ export default function SignInForm() {
             required
             mt="md"
             radius="md"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
           <Button type="submit" color="#0339A7" fullWidth mt="xl" radius="md">
             Sign in
