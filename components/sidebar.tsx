@@ -4,24 +4,27 @@ import Image from "next/image"
 import Link from "next/link"
 import { navbarItems } from "@/data/data"
 import { Button } from "@mantine/core"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getProfileData } from "@/data/supabase"
 import { profileDataType } from "@/lib/types"
+import { SupabaseClient } from "@/utils/supabaseClient"
 
 const Sidebar = () => {
   // User data tracked by hook
   const [profileData, setProfileData] = useState<profileDataType | undefined>(
     undefined
   )
+  const [isLoading, setIsLoading] = useState(false)
 
   // Pathname hook to check for current pathname and change styling on navitems
   const pathname = usePathname()
+  const router = useRouter()
 
-  // Get the user profile information
+  // Get the user profile information on mount
   useEffect(() => {
     const getUserData = async () => {
-      // Get the profile data from supabase. Returns only one object from the authorised user
+      // Get the profile data from supabase. Returns only one object from the authorized user
       const userData = await getProfileData()
 
       if (userData) {
@@ -31,6 +34,34 @@ const Sidebar = () => {
 
     getUserData()
   }, [])
+
+  // Signs the user out
+  const handleSignOut = async () => {
+    try {
+      const supabase = SupabaseClient()
+
+      // Set loading state
+      setIsLoading(true)
+
+      // Try to sing out the user
+      const { error } = await supabase.auth.signOut()
+
+      // push to signin on success
+      if (!error) {
+        router.push("/signin")
+      }
+
+      // Log the error if failed to sing out
+      if (error) {
+        console.log("Error signing out")
+        alert("Error signing out. Try again")
+      }
+    } catch (error) {
+      console.log("Error signing out")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <section className="bg-ek-desert justify-between w-1/5 h-screen p-3 flex flex-col">
@@ -73,14 +104,12 @@ const Sidebar = () => {
             className="border border-gray-300 rounded-md"
           />
           <div className="space-y-2">
-            <p className="text-sm font-bold">
-              {profileData.full_name}
-            </p>
-            <p className="text-ek-text-grey text-xs">{profileData.role === 'teacher' ? 'Lærer' : 'Studerende'}</p>
+            <p className="text-sm font-bold">{profileData.full_name}</p>
             <p className="text-ek-text-grey text-xs">
-              {profileData.email}
+              {profileData.role === "teacher" ? "Lærer" : "Studerende"}
             </p>
-            <Button color="black" size="xs">
+            <p className="text-ek-text-grey text-xs">{profileData.email}</p>
+            <Button loading={isLoading} onClick={handleSignOut} color="black" size="xs">
               Log ud
             </Button>
           </div>
