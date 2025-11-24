@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import DatePicker from "./ui/datePicker"
+import FloorSelect from "./ui/floorselect"
 
 const FilterSection = () => {
     // Filter state variables
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null)
 
   return (
     <div className="w-full rounded-3xl border border-gray-400 py-5 px-8">
@@ -16,7 +18,7 @@ const FilterSection = () => {
         <div className="space-y-2">
           <h3>Etage</h3>
           <p className="text-ek-text-grey text-sm">Vælg den ønskede etage</p>
-          <p>Input felt her</p>
+          <FloorSelect selectedFloor={selectedFloor} setSelectedFloor={setSelectedFloor}/>
         </div>
         {/* Date */}
         <div className="space-y-2">
