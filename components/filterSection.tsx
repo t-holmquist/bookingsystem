@@ -14,7 +14,7 @@ const FilterSection = () => {
   const [endTime, setEndTime] = useState<string | null>(null)
 
   return (
-    <div className="w-full rounded-3xl border border-gray-400 py-5 px-8">
+    <div className="w-full bg-white rounded-3xl border border-gray-400 py-5 px-8">
       <h2 className="text-xl font-semibold">Filter</h2>
       {/* Filter section */}
       <section className="mt-8 flex justify-between items-center">
