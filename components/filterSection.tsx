@@ -3,11 +3,15 @@
 import { useState } from "react"
 import DatePicker from "./ui/datePicker"
 import FloorSelect from "./ui/floorselect"
+import StartTimeSelect from "./ui/startTimeSelector"
+import EndTimeSelect from "./ui/endTimeSelector"
 
 const FilterSection = () => {
-    // Filter state variables
+  // Filter state variables
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedFloor, setSelectedFloor] = useState<string | null>(null)
+  const [startTime, setStartTime] = useState<string | null>(null)
+  const [endTime, setEndTime] = useState<string | null>(null)
 
   return (
     <div className="w-full rounded-3xl border border-gray-400 py-5 px-8">
@@ -18,7 +22,10 @@ const FilterSection = () => {
         <div className="space-y-2">
           <h3>Etage</h3>
           <p className="text-ek-text-grey text-sm">Vælg den ønskede etage</p>
-          <FloorSelect selectedFloor={selectedFloor} setSelectedFloor={setSelectedFloor}/>
+          <FloorSelect
+            selectedFloor={selectedFloor}
+            setSelectedFloor={setSelectedFloor}
+          />
         </div>
         {/* Date */}
         <div className="space-y-2">
@@ -32,7 +39,7 @@ const FilterSection = () => {
           <p className="text-ek-text-grey text-sm">
             Vælg det ønskede tidspunkt
           </p>
-          <p>Input felt her</p>
+          <StartTimeSelect startTime={startTime} setStartTime={setStartTime} />
         </div>
         {/* End time */}
         <div className="space-y-2">
@@ -40,7 +47,7 @@ const FilterSection = () => {
           <p className="text-ek-text-grey text-sm">
             Vælg det ønskede tidspunkt
           </p>
-          <p>Input felt her</p>
+          <EndTimeSelect endTime={endTime} setEndTime={setEndTime} />
         </div>
       </section>
     </div>
