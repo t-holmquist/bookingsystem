@@ -10,8 +10,8 @@ export default function DatePicker({
   setDate,
   date,
 }: {
-  setDate: Dispatch<SetStateAction<string | null>>
-  date: string | null
+  setDate: Dispatch<SetStateAction<Date | null>>
+  date: Date | null
 }) {
   return (
     // Provides the danish date strings
@@ -21,7 +21,7 @@ export default function DatePicker({
         leftSectionPointerEvents="none"
         placeholder="Vælg dato"
         value={date}
-        // The onchange returns a string under the hood through Mantine, instead of the event directly
+        // Mantine DatePickerInput onChange returns Date | null
         onChange={(value) => setDate(value)}
       />
     </DatesProvider>

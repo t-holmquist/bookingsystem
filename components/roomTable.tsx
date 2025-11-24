@@ -28,14 +28,22 @@ export function RoomTable() {
     setBookingInfo({ room, capacity, availability })
     // Opens the modal
     open()
-    
   }
+
+
+
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
-      <Toast showToast={showToast} setShowToast={setShowToast}/>
+      <Toast showToast={showToast} setShowToast={setShowToast} />
       {/* Modal with currently clicked room/booking details */}
-      <Modal radius="md" opened={opened} onClose={close} title="Overblik over booking" centered>
+      <Modal
+        radius="md"
+        opened={opened}
+        onClose={close}
+        title="Overblik over booking"
+        centered
+      >
         <div className="mb-4 space-y-1 text-sm">
           <div>
             <strong>Lokale:</strong> {bookingInfo?.room ?? "-"}
@@ -48,11 +56,17 @@ export function RoomTable() {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button onClick={() => {
-            setShowToast(true)
-            close()
-          }}>Book</Button>
-          <Button onClick={close} color="red">Annuller</Button>
+          <Button
+            onClick={() => {
+              setShowToast(true)
+              close()
+            }}
+          >
+            Book
+          </Button>
+          <Button onClick={close} color="red">
+            Annuller
+          </Button>
         </div>
       </Modal>
       {/* Tabel that displays all the roomdata */}
