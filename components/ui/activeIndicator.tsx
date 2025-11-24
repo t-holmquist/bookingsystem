@@ -1,6 +1,8 @@
 'use client'
 
+import { AuthContext } from '@/providers/auth-provider'
 import { motion } from 'motion/react'
+import { useContext } from 'react'
 
 const ActiveIndicator = () => {
   return (
