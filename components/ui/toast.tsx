@@ -13,7 +13,7 @@ const Toast = ({
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setShowToast(false)
-    }, 4000)
+    }, 3000)
     return () => clearTimeout(timeoutId)
   }, [showToast])
 
@@ -27,10 +27,10 @@ const Toast = ({
           exit={{ y: 20, opacity: 0 }}
           className="fixed right-8 bottom-4 z-50"
         >
-          <div className="flex items-center gap-3 bg-popover rounded-lg px-5 py-3 border border-border">
+          <div className="flex items-center gap-3 bg-white rounded-lg px-5 py-3 border border-border">
             <CircleCheck color="green" />
             <span className="text-xs font-semibold text-popover-foreground">
-              New session added successfully
+              Room booked succesfully
             </span>
           </div>
         </motion.div>

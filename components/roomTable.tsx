@@ -4,9 +4,11 @@ import { rooms } from "@/data/data"
 import { Button, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useState } from "react"
+import Toast from "./ui/toast"
 
 export function RoomTable() {
   const [opened, { open, close }] = useDisclosure(false)
+  const [showToast, setShowToast] = useState(false)
   const [bookingInfo, setBookingInfo] = useState<{
     room: string
     capacity: string
@@ -26,10 +28,12 @@ export function RoomTable() {
     setBookingInfo({ room, capacity, availability })
     // Opens the modal
     open()
+    
   }
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
+      <Toast showToast={showToast} setShowToast={setShowToast}/>
       {/* Modal with currently clicked room/booking details */}
       <Modal radius="md" opened={opened} onClose={close} title="Overblik over booking" centered>
         <div className="mb-4 space-y-1 text-sm">
@@ -44,7 +48,10 @@ export function RoomTable() {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button>Book</Button>
+          <Button onClick={() => {
+            setShowToast(true)
+            close()
+          }}>Book</Button>
           <Button onClick={close} color="red">Annuller</Button>
         </div>
       </Modal>
