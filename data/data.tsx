@@ -211,3 +211,71 @@ export const rooms = [
     booking: <Button size="sm">Book</Button>,
   },
 ]
+
+
+// Mock data for room table
+export const bookings = [
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+  {
+    room: "3.3 Mødelokale",
+    capacity: "4 personer",
+    time: "8:00 - 16:00",
+    date: "26/11/2025",
+    cancel: <Button color="red" size="sm">Annuller</Button>,
+  },
+]
