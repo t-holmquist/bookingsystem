@@ -106,7 +106,7 @@ const Sidebar = () => {
         </div>
       </div>
       {/* User information */}
-      {profileData && userImageUrl && (
+      {profileData && userImageUrl ? (
         <div className="flex gap-3 items-center">
           <Image
             src={userImageUrl}
@@ -131,6 +131,18 @@ const Sidebar = () => {
             </Button>
           </div>
         </div>
+      ) : (
+        <>
+          {/* Skeleton loaders */}
+          <section className="flex gap-2">
+            <div className="bg-slate-300 animate-pulse w-1/2 h-30 rounded-md"></div>
+            <div className="w-1/2 flex flex-col gap-2">
+              <div className="bg-slate-300 animate-pulse h-5 rounded-md"></div>
+              <div className="bg-slate-300 animate-pulse w-2/3 h-5 rounded-md"></div>
+              <div className="bg-slate-300 animate-pulse w-2/3 h-5 rounded-md"></div>
+            </div>
+          </section>
+        </>
       )}
     </section>
   )
