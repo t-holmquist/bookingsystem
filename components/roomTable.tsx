@@ -1,23 +1,54 @@
 "use client"
 
 import { rooms } from "@/data/data"
-import { Paper, Table } from "@mantine/core"
+import { Button, Modal, Paper, Table } from "@mantine/core"
+import { useDisclosure } from "@mantine/hooks"
+import { useState } from "react"
 
 export function RoomTable() {
-  const rows = rooms.map(
-    ({ room, capacity, availability, status, booking }, index: number) => (
-      <Table.Tr key={index}>
-        <Table.Td>{room}</Table.Td>
-        <Table.Td>{capacity}</Table.Td>
-        <Table.Td>{availability}</Table.Td>
-        <Table.Td>{status}</Table.Td>
-        <Table.Td>{booking}</Table.Td>
-      </Table.Tr>
-    )
-  )
+  const [opened, { open, close }] = useDisclosure(false)
+  const [bookingInfo, setBookingInfo] = useState<{
+    room: string
+    capacity: string
+    availability: string
+  } | null>(null)
+
+  const handleOpenBooking = ({
+    room,
+    capacity,
+    availability,
+  }: {
+    room: string
+    capacity: string
+    availability: string
+  }) => {
+    // Sets the booking info that the modal then displays
+    setBookingInfo({ room, capacity, availability })
+    // Opens the modal
+    open()
+  }
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
+      {/* Modal with currently clicked room/booking details */}
+      <Modal radius="md" opened={opened} onClose={close} title="Overblik over booking" centered>
+        <div className="mb-4 space-y-1 text-sm">
+          <div>
+            <strong>Lokale:</strong> {bookingInfo?.room ?? "-"}
+          </div>
+          <div>
+            <strong>Kapacitet:</strong> {bookingInfo?.capacity ?? "-"}
+          </div>
+          <div>
+            <strong>Tidsrum:</strong> {bookingInfo?.availability ?? "-"}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <Button>Book</Button>
+          <Button color="red">Annuller</Button>
+        </div>
+      </Modal>
+      {/* Tabel that displays all the roomdata */}
       <Table.ScrollContainer
         minWidth={500}
         maxHeight={350}
@@ -53,7 +84,28 @@ export function RoomTable() {
               </Table.Th>
             </Table.Tr>
           </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
+          <Table.Tbody>
+            {rooms.map(
+              ({ room, capacity, availability, status }, index: number) => (
+                <Table.Tr key={index}>
+                  <Table.Td>{room}</Table.Td>
+                  <Table.Td>{capacity}</Table.Td>
+                  <Table.Td>{availability}</Table.Td>
+                  <Table.Td>{status}</Table.Td>
+                  <Table.Td>
+                    <Button
+                      onClick={() =>
+                        handleOpenBooking({ room, capacity, availability })
+                      }
+                      size="sm"
+                    >
+                      Book
+                    </Button>
+                  </Table.Td>
+                </Table.Tr>
+              )
+            )}
+          </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
     </Paper>
