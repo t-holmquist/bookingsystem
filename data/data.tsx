@@ -127,7 +127,7 @@ export const rooms = [
     capacity: "4 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),
@@ -138,7 +138,7 @@ export const rooms = [
     capacity: "8 per",
     availability: "12:00 - 14:00",
     status: (
-      <Badge color="red" variant="light">
+      <Badge radius="xs" color="red" variant="light">
         Optaget
       </Badge>
     ),
@@ -149,7 +149,7 @@ export const rooms = [
     capacity: "6 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),
@@ -160,7 +160,7 @@ export const rooms = [
     capacity: "4 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),
@@ -171,7 +171,7 @@ export const rooms = [
     capacity: "4 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),
@@ -182,7 +182,7 @@ export const rooms = [
     capacity: "8 per",
     availability: "12:00 - 14:00",
     status: (
-      <Badge color="red" variant="light">
+      <Badge radius="xs" color="red" variant="light">
         Optaget
       </Badge>
     ),
@@ -193,7 +193,7 @@ export const rooms = [
     capacity: "6 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),
@@ -204,7 +204,7 @@ export const rooms = [
     capacity: "4 per",
     availability: "8:00 - 16:00",
     status: (
-      <Badge color="green" variant="light">
+      <Badge radius="xs" color="green" variant="light">
         Ledigt
       </Badge>
     ),

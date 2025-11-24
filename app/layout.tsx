@@ -16,6 +16,25 @@ export const metadata = {
   description: "Bookingsystem for meetingrooms",
 }
 
+// Override Mantine theme. Apparently there is a need for shades, But here I have set them to the same color.
+const theme = createTheme({
+  primaryColor: 'ek-blue',
+  colors: {
+    'ek-blue': [
+      '#0339A7', // 0
+      '#0339A7', // 1
+      '#0339A7', // 2
+      '#0339A7', // 3
+      '#0339A7', // 4
+      '#0339A7', // 5
+      '#0339A7', // 6
+      '#0339A7', // 7
+      '#0339A7', // 8
+      '#0339A7', // 9
+    ],
+  },
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -28,7 +47,7 @@ export default function RootLayout({
       </head>
       <AuthProvider>
         <body>
-          <MantineProvider>{children}</MantineProvider>
+          <MantineProvider theme={theme}>{children}</MantineProvider>
         </body>
       </AuthProvider>
     </html>

@@ -69,7 +69,7 @@ export default function SignInForm() {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-          <Button loading={isLoading} type="submit" color="#0339A7" fullWidth mt="xl" radius="md">
+          <Button loading={isLoading} type="submit" fullWidth mt="xl" radius="md">
             Sign in
           </Button>
         </Paper>
