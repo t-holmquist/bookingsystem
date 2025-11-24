@@ -45,7 +45,7 @@ export function RoomTable() {
         </div>
         <div className="flex justify-between">
           <Button>Book</Button>
-          <Button color="red">Annuller</Button>
+          <Button onClick={close} color="red">Annuller</Button>
         </div>
       </Modal>
       {/* Tabel that displays all the roomdata */}
