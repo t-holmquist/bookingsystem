@@ -1,3 +1,4 @@
+import { roomType } from "@/lib/types"
 import { SupabaseClient } from "../utils/supabaseClient"
 
 // Get the role to display different ui in certain scenarios
@@ -23,7 +24,7 @@ export const checkBookings = async ({
   const supabase = SupabaseClient()
 
   // If a booking is NOT available (it is a doublebooking) then the roomId of that booking should be added to this list and returned to the roomList so that the roomList can filter out these rooms and only show all other rooms that are available
-  const unvailableRooms: Array<{ room_id?: string | number }> = []
+  const unvailableRooms: roomType = []
 
   // Query the bookings table to find overlapping bookings
   // A booking overlaps if: booking.start <= our.end AND booking.end >= our.start

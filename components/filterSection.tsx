@@ -1,29 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import DatePicker from "./ui/datePicker"
 import FloorSelect from "./ui/floorselect"
 import StartTimeSelect from "./ui/startTimeSelector"
 import EndTimeSelect from "./ui/endTimeSelector"
 import { checkBookings } from "@/data/supabase"
+import { roomType } from "@/lib/types"
 
-const FilterSection = () => {
+const FilterSection = ({
+  setUnavailableRooms,
+}: {
+  // Contains the roomtype or undefined
+  setUnavailableRooms: Dispatch<SetStateAction<roomType | undefined>>
+}) => {
   // Filter state variables
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedFloor, setSelectedFloor] = useState<string | null>(null)
   const [startTime, setStartTime] = useState<string | null>(null)
   const [endTime, setEndTime] = useState<string | null>(null)
 
-  // Array of UNAVAILABLE rooms which we get from supabase through the double booking checking function. This
-  const [unavaibleRooms, setUnavailableRooms] =
-    useState<Array<{ room_id?: string | number }>>()
-
   // Each time a filter changes then call supabase to check if there are any bookings on every room with the specific filters set
   useEffect(() => {
     const checkIfCanBook = async () => {
       // Only check bookings if all required filters are set
       if (!selectedDate || !startTime || !endTime) {
-        setUnavailableRooms([])
+        setUnavailableRooms(undefined)
         return
       }
 
@@ -44,10 +46,11 @@ const FilterSection = () => {
         return `${year}-${month}-${day}T${paddedHours}:${paddedMinutes}:00.000Z`
       }
 
-      // Format as ISO for Supabase
+      // Format as ISO for Supabase. Combining the starttime or endtime with the date object made from selecteddate
       const formattedStartTime = parseTime(startTime)
       const formattedEndTime = parseTime(endTime)
 
+      // CALLS SUPABASE HERE
       // Check if the booking exist on each meetingroom (if not then we can book it)
       const data = await checkBookings({
         startTime: formattedStartTime,
