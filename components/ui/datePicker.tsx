@@ -10,8 +10,8 @@ export default function DatePicker({
   setDate,
   date,
 }: {
-  setDate: Dispatch<SetStateAction<Date | null>>
-  date: Date | null
+  setDate: Dispatch<SetStateAction<string | null>>
+  date: string | null
 }) {
   return (
     // Provides the danish date strings

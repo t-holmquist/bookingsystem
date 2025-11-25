@@ -16,11 +16,11 @@ const FilterSection = ({
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   setSelectedTimeRange?: Dispatch<SetStateAction<string | undefined>>
 }) => {
-  // Filter state variables
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [selectedFloor, setSelectedFloor] = useState<string | null>(null)
-  const [startTime, setStartTime] = useState<string | null>(null)
-  const [endTime, setEndTime] = useState<string | null>(null)
+  
+  const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString())
+  const [selectedFloor, setSelectedFloor] = useState<string | null>("Sal. 3")
+  const [startTime, setStartTime] = useState<string | null>("8:00")
+  const [endTime, setEndTime] = useState<string | null>("16:00")
 
   // Each time a filter changes then call supabase to check if there are any bookings on every room with the specific filters set
   useEffect(() => {
