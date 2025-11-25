@@ -6,13 +6,15 @@ import FloorSelect from "./ui/floorselect"
 import StartTimeSelect from "./ui/startTimeSelector"
 import EndTimeSelect from "./ui/endTimeSelector"
 import { checkBookings } from "@/data/supabase"
-import { roomType } from "@/lib/types"
+import { doubleBookingType } from "@/lib/types"
 
 const FilterSection = ({
-  setUnavailableRooms,
+  setDoubleBookings,
+  setSelectedTimeRange,
 }: {
   // Contains the roomtype or undefined
-  setUnavailableRooms: Dispatch<SetStateAction<roomType | undefined>>
+  setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
+  setSelectedTimeRange?: Dispatch<SetStateAction<string | undefined>>
 }) => {
   // Filter state variables
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -25,7 +27,7 @@ const FilterSection = ({
     const checkIfCanBook = async () => {
       // Only check bookings if all required filters are set
       if (!selectedDate || !startTime || !endTime) {
-        setUnavailableRooms(undefined)
+        setDoubleBookings(undefined)
         return
       }
 
@@ -58,12 +60,21 @@ const FilterSection = ({
       })
 
       if (data) {
-        setUnavailableRooms(data)
+        setDoubleBookings(data)
       }
     }
 
     checkIfCanBook()
   }, [selectedDate, selectedFloor, startTime, endTime])
+
+  useEffect(() => {
+    if (!startTime || !endTime) {
+      setSelectedTimeRange?.(undefined)
+      return
+    }
+
+    setSelectedTimeRange?.(`${startTime}-${endTime}`)
+  }, [startTime, endTime, setSelectedTimeRange])
 
   return (
     <div className="w-full bg-white rounded-3xl border border-gray-400 py-5 px-8">

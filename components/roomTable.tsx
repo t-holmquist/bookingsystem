@@ -1,14 +1,26 @@
 "use client"
 
-import { rooms } from "@/data/data"
-import { Button, Modal, Paper, Table } from "@mantine/core"
+import { getAvailableRooms } from "@/data/supabase"
+import { doubleBookingType, roomType } from "@/lib/types"
+import { Badge, Button, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Toast from "./ui/toast"
 
-export function RoomTable() {
+export function RoomTable({
+  setDoubleBookings: _setDoubleBookings,
+  doubleBookings,
+  timeRange,
+}: {
+  // Contains the doubleBookingType or undefined
+  setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
+  doubleBookings: doubleBookingType | undefined
+  timeRange?: string
+}) {
   const [opened, { open, close }] = useDisclosure(false)
   const [showToast, setShowToast] = useState(false)
+  const [availableRooms, setAvailableRooms] = useState<roomType>([])
+  const [isLoadingRooms, setIsLoadingRooms] = useState(false)
   const [bookingInfo, setBookingInfo] = useState<{
     room: string
     capacity: string
@@ -30,8 +42,41 @@ export function RoomTable() {
     open()
   }
 
+  // Fetch all the available rooms based on a filtration of the double bookings, which should not be included.
+  // Called everytime double bookings change -> indicating that a user has booked a room
+  useEffect(() => {
+    let isMounted = true
 
+    const fetchRooms = async () => {
+      setIsLoadingRooms(true)
+      try {
+        const rooms = await getAvailableRooms(doubleBookings)
+        if (isMounted) {
+          setAvailableRooms(rooms)
+        }
+      } catch (error) {
+        console.error("Failed to fetch available rooms:", error)
+      } finally {
+        if (isMounted) {
+          setIsLoadingRooms(false)
+        }
+      }
+    }
 
+    fetchRooms()
+
+    return () => {
+      isMounted = false
+    }
+  }, [doubleBookings])
+
+  const renderStatusBadge = () => (
+    <Badge radius="xs" color="green" variant="light">
+      Ledig
+    </Badge>
+  )
+
+  const availabilityText = timeRange ?? "-"
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
@@ -106,26 +151,48 @@ export function RoomTable() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {rooms.map(
-              ({ room, capacity, availability, status }, index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td>{room}</Table.Td>
-                  <Table.Td>{capacity}</Table.Td>
-                  <Table.Td>{availability}</Table.Td>
-                  <Table.Td>{status}</Table.Td>
-                  <Table.Td>
-                    <Button
-                      onClick={() =>
-                        handleOpenBooking({ room, capacity, availability })
-                      }
-                      size="sm"
-                    >
-                      Book
-                    </Button>
-                  </Table.Td>
-                </Table.Tr>
-              )
+            {isLoadingRooms && (
+              <Table.Tr>
+                <Table.Td colSpan={5} style={{ textAlign: "center" }}>
+                  Henter ledige lokaler...
+                </Table.Td>
+              </Table.Tr>
             )}
+            {!isLoadingRooms && availableRooms.length === 0 && (
+              <Table.Tr>
+                <Table.Td colSpan={5} style={{ textAlign: "center" }}>
+                  Ingen ledige lokaler matcher dine filtre.
+                </Table.Td>
+              </Table.Tr>
+            )}
+            {!isLoadingRooms &&
+              availableRooms.map(({ room_id, room_size }, index: number) => {
+                const roomLabel = room_id ?? "-"
+                const capacityLabel = room_size ? `${room_size} personer` : "-"
+
+                return (
+                  <Table.Tr key={`${room_id ?? index}-${index}`}>
+                    <Table.Td>{roomLabel}</Table.Td>
+                    <Table.Td>{capacityLabel}</Table.Td>
+                    <Table.Td>{availabilityText}</Table.Td>
+                    <Table.Td>{renderStatusBadge()}</Table.Td>
+                    <Table.Td>
+                      <Button
+                        onClick={() =>
+                          handleOpenBooking({
+                            room: roomLabel,
+                            capacity: capacityLabel,
+                            availability: availabilityText,
+                          })
+                        }
+                        size="sm"
+                      >
+                        Book
+                      </Button>
+                    </Table.Td>
+                  </Table.Tr>
+                )
+              })}
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>

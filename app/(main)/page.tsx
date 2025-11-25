@@ -3,13 +3,17 @@
 import FilterSection from "@/components/filterSection"
 import Header from "@/components/header"
 import { RoomTable } from "@/components/roomTable"
-import { roomType } from "@/lib/types"
+import { doubleBookingType } from "@/lib/types"
 import { useState } from "react"
 
 export default function Home() {
-  // Array of UNAVAILABLE rooms which we get from supabase through the double booking checking function. This
-  const [unavailableRooms, setUnavailableRooms] =
-    useState<roomType | undefined>()
+  // Array of double bookings which we get from supabase through the double booking checking function.
+  const [doubleBookings, setDoubleBookings] = useState<
+    doubleBookingType | undefined
+  >()
+  const [selectedTimeRange, setSelectedTimeRange] = useState<
+    string | undefined
+  >(undefined)
 
   return (
     <div className="flex flex-col h-screen bg-ek-bg p-8">
@@ -17,12 +21,19 @@ export default function Home() {
       <section className="mt-10 gap-10 flex flex-col h-full justify-between">
         {/* Filter section */}
         <FilterSection
-          setUnavailableRooms={setUnavailableRooms}
+          setDoubleBookings={setDoubleBookings}
+          setSelectedTimeRange={setSelectedTimeRange}
         />
         {/* Room result list section */}
         <section className="py-5 px-8 space-y-8 bg-white border border-gray-400 rounded-3xl w-full h-full">
           <h2 className="text-xl font-semibold">Lokale visning</h2>
-          <RoomTable />
+          {/* Roomtable gets the double bookings so that it can filter out those rooms with those room_ids and only show every other room */}
+          {/* It can update the double booking when a user has made a booking, so that it adds the booked room to the array of double bookings */}
+          <RoomTable
+            doubleBookings={doubleBookings}
+            setDoubleBookings={setDoubleBookings}
+            timeRange={selectedTimeRange}
+          />
         </section>
       </section>
     </div>

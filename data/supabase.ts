@@ -1,4 +1,4 @@
-import { roomType } from "@/lib/types"
+import { doubleBookingType, roomType } from "@/lib/types"
 import { SupabaseClient } from "../utils/supabaseClient"
 
 // Get the role to display different ui in certain scenarios
@@ -24,7 +24,7 @@ export const checkBookings = async ({
   const supabase = SupabaseClient()
 
   // If a booking is NOT available (it is a doublebooking) then the roomId of that booking should be added to this list and returned to the roomList so that the roomList can filter out these rooms and only show all other rooms that are available
-  const unvailableRooms: roomType = []
+  const doubleBookings: doubleBookingType = []
 
   // Query the bookings table to find overlapping bookings
   // A booking overlaps if: booking.start <= our.end AND booking.end >= our.start
@@ -38,15 +38,56 @@ export const checkBookings = async ({
 
   if (error) {
     console.error("Error checking bookings:", error)
-    return unvailableRooms
+    return doubleBookings
   }
 
   // Add the UNAVAILABLE room to the list
   if (data) {
     data.forEach((room) => {
-      unvailableRooms.push(room)
+      doubleBookings.push(room)
     })
   }
 
-  return unvailableRooms
+  return doubleBookings
+}
+
+
+// Fetch every room that is not part of the doubleBookings array
+// I got an array of bookings with room_ids that i dont want the room_id for
+// I want to get all rooms except the rooms with the room_ids in the doublebookings array
+export const getAvailableRooms = async (
+  doubleBookings?: doubleBookingType
+): Promise<roomType> => {
+  const supabase = SupabaseClient()
+
+  // Extract unique room_ids from doubleBookings
+  const doubleBookedRoomIds = doubleBookings
+    ? Array.from(
+        new Set(
+          doubleBookings
+            .map((booking) => booking.room_id)
+            .filter((roomId): roomId is string => Boolean(roomId))
+        )
+      )
+    : []
+
+  // Fetch all rooms from the meetingsroom table
+  const { data, error } = await supabase.from("meetingsrooms").select("*")
+
+  if (error) {
+    console.error("Error fetching available rooms:", error)
+    return []
+  }
+
+  // If there are no double-booked rooms, return all rooms
+  if (doubleBookedRoomIds.length === 0) {
+    return (data ?? []) as roomType
+  }
+
+  // Filter out rooms that have room_ids in the doubleBookedRoomIds array
+  const availableRooms = (data ?? []).filter(
+    (room) => !doubleBookedRoomIds.includes(room.room_id)
+  )
+
+  return availableRooms as roomType
 }
