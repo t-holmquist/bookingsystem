@@ -2,7 +2,7 @@
 
 import { getAvailableRooms } from "@/data/supabase"
 import { doubleBookingType, roomType } from "@/lib/types"
-import { Badge, Button, Modal, Paper, Table } from "@mantine/core"
+import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Toast from "./ui/toast"
@@ -154,7 +154,7 @@ export function RoomTable({
             {isLoadingRooms && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
-                  Henter ledige lokaler...
+                  <Loader/>
                 </Table.Td>
               </Table.Tr>
             )}

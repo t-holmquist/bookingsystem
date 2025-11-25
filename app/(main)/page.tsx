@@ -25,7 +25,7 @@ export default function Home() {
           setSelectedTimeRange={setSelectedTimeRange}
         />
         {/* Room result list section */}
-        <section className="py-5 px-8 space-y-8 bg-white border border-gray-400 rounded-3xl w-full h-full">
+        <section className="py-5 px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
           <h2 className="text-xl font-semibold">Lokale visning</h2>
           {/* Roomtable gets the double bookings so that it can filter out those rooms with those room_ids and only show every other room */}
           {/* It can update the double booking when a user has made a booking, so that it adds the booked room to the array of double bookings */}
