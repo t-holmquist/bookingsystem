@@ -23,7 +23,7 @@ export function BookingTable() {
         maxHeight={350}
         scrollAreaProps={{ offsetScrollbars: false }}
       >
-        <Table stickyHeader withTableBorder>
+        <Table stickyHeader>
           <Table.Thead>
             <Table.Tr>
               <Table.Th
