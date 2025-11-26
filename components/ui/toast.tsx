@@ -4,9 +4,11 @@ import { CircleCheck } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
 const Toast = ({
+  message,
   showToast,
   setShowToast,
 }: {
+  message: string
   showToast: boolean
   setShowToast: Dispatch<SetStateAction<boolean>>
 }) => {
@@ -22,7 +24,7 @@ const Toast = ({
     <AnimatePresence>
       {showToast && (
         <motion.div
-          initial={{ y: 20, opacity: 0, }}
+          initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}
           className="fixed right-8 bottom-4 z-50"
@@ -30,7 +32,7 @@ const Toast = ({
           <div className="flex items-center gap-3 bg-white rounded-lg px-5 py-3 border border-border">
             <CircleCheck color="green" />
             <span className="text-xs font-semibold text-popover-foreground">
-              Room booked succesfully
+              {message}
             </span>
           </div>
         </motion.div>

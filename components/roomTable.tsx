@@ -80,7 +80,7 @@ export function RoomTable({
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
-      <Toast showToast={showToast} setShowToast={setShowToast} />
+      <Toast message="Room booked succesfully" showToast={showToast} setShowToast={setShowToast} />
       {/* Modal with currently clicked room/booking details */}
       <Modal
         radius="md"
@@ -154,7 +154,7 @@ export function RoomTable({
             {isLoadingRooms && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
-                  <Loader/>
+                  <Loader size="sm"/>
                 </Table.Td>
               </Table.Tr>
             )}

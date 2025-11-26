@@ -88,19 +88,18 @@ export function BookingTable() {
           userBookings.filter(item =>
             item.id !== data.id
           )
-        );
+        )
+        setShowToast(true)
+        close()
+      } else {
+        console.log(error?.message);
       }
-      
-      
     }
-
   }
-
-
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
-      <Toast showToast={showToast} setShowToast={setShowToast} />
+      <Toast message="Booking deleted succesfully" showToast={showToast} setShowToast={setShowToast} />
       {/* Modal with currently clicked room/booking details */}
       <Modal
         radius="md"
@@ -123,11 +122,7 @@ export function BookingTable() {
         <div className="flex justify-between">
           <Button
           color="red"
-            onClick={() => {
-              handleDeleteBooking()
-              setShowToast(true)
-              close()
-            }}
+            onClick={handleDeleteBooking}
           >
             Ja
           </Button>
@@ -173,13 +168,15 @@ export function BookingTable() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
+            {/* If loading data then show spinner */}
             {isLoadingBookings && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
-                  <Loader />
+                  <Loader size="sm"/>
                 </Table.Td>
               </Table.Tr>
             )}
+            {/* If not loading but there is no data -> show message */}
             {!isLoadingBookings &&
               userBookings &&
               userBookings.length === 0 && (
@@ -189,6 +186,7 @@ export function BookingTable() {
                   </Table.Td>
                 </Table.Tr>
               )}
+              {/* If not loading and data is present (finished loading) -> render data */}
             {!isLoadingBookings &&
               userBookings &&
               userBookings.map(
