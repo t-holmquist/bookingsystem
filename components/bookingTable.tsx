@@ -4,7 +4,7 @@ import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useContext, useEffect, useState } from "react"
 import Toast from "./ui/toast"
-import { getUserBookings } from "@/data/supabase"
+import { deleteBooking, getUserBookings } from "@/data/supabase"
 import { formatDate, formatTime } from "@/utils/timeAndDateFormat"
 import { AuthContext } from "@/providers/auth-provider"
 
@@ -16,6 +16,7 @@ export function BookingTable() {
     room: string
     date: string
     time: string
+    id: number
   } | null>(null)
   const [userBookings, setUserBookings] = useState<Array<{
     id: number
@@ -31,21 +32,25 @@ export function BookingTable() {
   // Gets the user session to pass the user id it to getUserBookings
   const user = useContext(AuthContext)
 
+  // Opens modal with cancellation info
   const handleOpenBooking = ({
     room,
     date,
     time,
+    id,
   }: {
     room: string
     date: string
     time: string
+    id: number
   }) => {
     // Sets the booking info that the modal then displays
-    setCancelInfo({ room, date, time })
+    setCancelInfo({ room, date, time, id })
     // Opens the modal
     open()
   }
 
+  // Fetch user specific bookings
   useEffect(() => {
     // Wait until we actually have a user before trying to fetch bookings. This useEffects runs each time auth "User" updates. 
     if (!user || !user.id) return
@@ -69,6 +74,29 @@ export function BookingTable() {
 
     getBookings()
   }, [user])
+
+
+  // Delete a booking
+  const handleDeleteBooking = async () => {
+
+    if(cancelInfo?.id) {
+      const { data, error } = await deleteBooking(cancelInfo.id)
+
+      // Update the UI and remove deleted booking from the userBookingslist
+      if(!error && data && userBookings) {
+        setUserBookings(
+          userBookings.filter(item =>
+            item.id !== data.id
+          )
+        );
+      }
+      
+      
+    }
+
+  }
+
+
 
   return (
     <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
@@ -94,15 +122,17 @@ export function BookingTable() {
         </div>
         <div className="flex justify-between">
           <Button
+          color="red"
             onClick={() => {
+              handleDeleteBooking()
               setShowToast(true)
               close()
             }}
           >
-            Book
+            Ja
           </Button>
-          <Button onClick={close} color="red">
-            Annuller
+          <Button onClick={close}>
+            Nej
           </Button>
         </div>
       </Modal>
@@ -184,6 +214,7 @@ export function BookingTable() {
                               room: room_id,
                               date: bookingDate,
                               time: timeRange,
+                              id: id
                             })
                           }
                           color="red"

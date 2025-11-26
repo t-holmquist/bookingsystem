@@ -124,3 +124,17 @@ export const getUserBookings = async (user_id: string) => {
 
   return data
 }
+
+// Deletes a booking
+export const deleteBooking = async (booking_id: number) => {
+  const supabase = SupabaseClient()
+
+  const { data, error } = await supabase
+  .from('bookings')
+  .delete()
+  .eq('id', booking_id)
+  .select()
+  .single()
+
+  return {error: error, data: data}
+}
