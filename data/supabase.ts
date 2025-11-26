@@ -51,7 +51,6 @@ export const checkBookings = async ({
   return doubleBookings
 }
 
-
 // Fetch every room that is not part of the doubleBookings array
 // I got an array of bookings with room_ids that i dont want the room_id for
 // I want to get all rooms except the rooms with the room_ids in the doublebookings array
@@ -90,4 +89,38 @@ export const getAvailableRooms = async (
   )
 
   return availableRooms as roomType
+}
+
+// Fetches the bookings and inner joins the meetingsrooms
+export const getUserBookings = async (user_id: string) => {
+  if (!user_id) {
+    console.error("getUserBookings called without a valid user_id")
+    return []
+  }
+
+  const supabase = SupabaseClient()
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      id,
+      starting_at,
+      ending_at,
+      room_id,
+      meetingsrooms!inner (
+        room_size,
+        floor
+      )
+    `
+    )
+    .eq("user_id", user_id) // Only fetch bookings for the specific user
+    .order("starting_at", { ascending: true })
+
+  if (error) {
+    console.error("Error fetching user bookings:", error)
+    return
+  }
+
+  return data
 }
