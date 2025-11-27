@@ -95,7 +95,7 @@ export function RoomTable({
 
       if (data) {
         // Filter out the availble room based on room_id to remove from the UI in addition to the db
-        // setAvailableRooms()
+        setAvailableRooms(availableRooms.filter((item) => item.room_id !== data.room_id))
         setShowToast(true)
         close()
       }
@@ -139,7 +139,11 @@ export function RoomTable({
           </div>
         </div>
         <div className="flex justify-between">
-          <Button loading={isBooking} onClick={handleCreateBooking} disabled={!timeRangeIso}>
+          <Button
+            loading={isBooking}
+            onClick={handleCreateBooking}
+            disabled={!timeRangeIso}
+          >
             Book
           </Button>
           <Button onClick={close} color="red">
