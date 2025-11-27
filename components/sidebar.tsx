@@ -76,7 +76,7 @@ const Sidebar = () => {
   }
 
   return (
-    <section className="bg-ek-desert justify-between w-1/5 h-screen p-3 flex flex-col">
+    <section className="bg-ek-desert justify-between border-r border-gray-300 w-1/5 h-screen p-3 flex flex-col">
       {/* Logo and title */}
       <div className="space-y-4">
         <div className="items-center flex flex-col">
