@@ -19,10 +19,11 @@ export function RoomTable({
   timeRange?: string
   timeRangeIso?: isoTimeRange
 }) {
-  const [opened, { open, close }] = useDisclosure(false)
-  const [showToast, setShowToast] = useState(false)
-  const [availableRooms, setAvailableRooms] = useState<roomType>([])
-  const [isLoadingRooms, setIsLoadingRooms] = useState(false)
+  const [opened, { open, close }] = useDisclosure(false) // Modal state for booking details
+  const [showToast, setShowToast] = useState(false) // Toast state for booking success
+  const [isBooking, setIsBooking] = useState(false) // Loading state for booking
+  const [availableRooms, setAvailableRooms] = useState<roomType>([]) // Available rooms
+  const [isLoadingRooms, setIsLoadingRooms] = useState(false) // Loading state for rooms
   const [bookingInfo, setBookingInfo] = useState<{
     roomId: string
     capacity: string
@@ -72,12 +73,6 @@ export function RoomTable({
     }
   }, [doubleBookings])
 
-  const renderStatusBadge = () => (
-    <Badge radius="xs" color="green" variant="light">
-      Ledig
-    </Badge>
-  )
-
   // Create a booking
   const handleCreateBooking = async () => {
     if (!bookingInfo?.roomId || !timeRangeIso) {
@@ -86,6 +81,7 @@ export function RoomTable({
     }
 
     try {
+      setIsBooking(true)
       const { data, error } = await createBooking(
         timeRangeIso.start,
         timeRangeIso.end,
@@ -105,6 +101,8 @@ export function RoomTable({
       }
     } catch (error) {
       console.error("Error creating booking:", error)
+    } finally {
+      setIsBooking(false)
     }
   }
 
@@ -141,7 +139,7 @@ export function RoomTable({
           </div>
         </div>
         <div className="flex justify-between">
-          <Button onClick={handleCreateBooking} disabled={!timeRangeIso}>
+          <Button loading={isBooking} onClick={handleCreateBooking} disabled={!timeRangeIso}>
             Book
           </Button>
           <Button onClick={close} color="red">
@@ -211,7 +209,11 @@ export function RoomTable({
                     <Table.Td>{roomLabel}</Table.Td>
                     <Table.Td>{capacityLabel}</Table.Td>
                     <Table.Td>{availabilityText}</Table.Td>
-                    <Table.Td>{renderStatusBadge()}</Table.Td>
+                    <Table.Td>
+                      <Badge radius="xs" color="green" variant="light">
+                        Ledig
+                      </Badge>
+                    </Table.Td>
                     <Table.Td>
                       <Button
                         onClick={() =>
