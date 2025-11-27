@@ -3,7 +3,7 @@
 import FilterSection from "@/components/filterSection"
 import Header from "@/components/header"
 import { RoomTable } from "@/components/roomTable"
-import { doubleBookingType } from "@/lib/types"
+import { doubleBookingType, isoTimeRange } from "@/lib/types"
 import { useState } from "react"
 
 export default function Home() {
@@ -14,6 +14,9 @@ export default function Home() {
   const [selectedTimeRange, setSelectedTimeRange] = useState<
     string | undefined
   >(undefined)
+  const [selectedIsoRange, setSelectedIsoRange] = useState<
+    isoTimeRange | undefined
+  >(undefined)
 
   return (
     <div className="flex flex-col h-screen bg-ek-bg p-8">
@@ -23,6 +26,7 @@ export default function Home() {
         <FilterSection
           setDoubleBookings={setDoubleBookings}
           setSelectedTimeRange={setSelectedTimeRange}
+          setSelectedIsoRange={setSelectedIsoRange}
         />
         {/* Room result list section */}
         <section className="py-5 px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
@@ -33,6 +37,7 @@ export default function Home() {
             doubleBookings={doubleBookings}
             setDoubleBookings={setDoubleBookings}
             timeRange={selectedTimeRange}
+            timeRangeIso={selectedIsoRange}
           />
         </section>
       </section>

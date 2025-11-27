@@ -8,13 +8,13 @@ export const formatDate = (isoString: string) => {
   return `${day}/${month}/${year}`
 }
 
-
 // Format the time range as H:MM-H:MM
 // Displayed on Mine bookinger page
+// Converts UTC time from database to viewer's local timezone
 export const formatTime = (isoString: string) => {
-    const date = new Date(isoString)
-    // Returns H:MM in 24h format, removing leading 0 from hour if present
-    const hours = date.getHours()
-    const minutes = date.getMinutes().toString().padStart(2, "0")
-    return `${hours}:${minutes}`
-  }
+  const date = new Date(isoString)
+  // getHours() and getMinutes() automatically convert UTC to local timezone
+  const hours = date.getHours()
+  const minutes = date.getMinutes().toString().padStart(2, "0")
+  return `${hours}:${minutes}`
+}

@@ -28,6 +28,12 @@ export type roomType = Array<{
 }>
 
 
+export type isoTimeRange = {
+  start: string
+  end: string
+}
+
+
 // Type for join between booking and room (as returned from Supabase join query)
 export type bookingWithRoomType = Array<{
   id: number

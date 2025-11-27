@@ -6,57 +6,76 @@ import FloorSelect from "./ui/floorselect"
 import StartTimeSelect from "./ui/startTimeSelector"
 import EndTimeSelect from "./ui/endTimeSelector"
 import { checkBookings } from "@/data/supabase"
-import { doubleBookingType } from "@/lib/types"
+import { doubleBookingType, isoTimeRange } from "@/lib/types"
 
 const FilterSection = ({
   setDoubleBookings,
   setSelectedTimeRange,
+  setSelectedIsoRange,
 }: {
   // Contains the roomtype or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   setSelectedTimeRange?: Dispatch<SetStateAction<string | undefined>>
+  setSelectedIsoRange?: Dispatch<SetStateAction<isoTimeRange | undefined>>
 }) => {
-  
-  const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString())
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    new Date().toISOString()
+  )
   const [selectedFloor, setSelectedFloor] = useState<string | null>("Sal. 3")
   const [startTime, setStartTime] = useState<string | null>("8:00")
   const [endTime, setEndTime] = useState<string | null>("16:00")
 
+  const buildIsoRange = () => {
+    if (!selectedDate || !startTime || !endTime) {
+      return undefined
+    }
+
+    // Create a date object from the selected date (this will be in local timezone)
+    const dateObj = new Date(selectedDate)
+    const year = dateObj.getFullYear()
+    const month = dateObj.getMonth()
+    const day = dateObj.getDate()
+
+    const parseTime = (time: string) => {
+      const [hours, minutes] = time.split(":")
+      // Create a Date object in the user's local timezone
+      const localDate = new Date(
+        year,
+        month,
+        day,
+        parseInt(hours, 10),
+        parseInt(minutes, 10),
+        0,
+        0
+      )
+      // Convert to ISO string (which will be in UTC)
+      return localDate.toISOString()
+    }
+
+    return {
+      start: parseTime(startTime),
+      end: parseTime(endTime),
+    }
+  }
+
   // Each time a filter changes then call supabase to check if there are any bookings on every room with the specific filters set
   useEffect(() => {
     const checkIfCanBook = async () => {
-      // Only check bookings if all required filters are set
-      if (!selectedDate || !startTime || !endTime) {
+      const isoRange = buildIsoRange()
+
+      if (!isoRange) {
         setDoubleBookings(undefined)
+        setSelectedIsoRange?.(undefined)
         return
       }
 
-      // Format the date and time for Supabase in ISO 8601 format
-      const dateObj = new Date(selectedDate)
-
-      // Get date components
-      const year = dateObj.getFullYear()
-      const month = String(dateObj.getMonth() + 1).padStart(2, "0")
-      const day = String(dateObj.getDate()).padStart(2, "0")
-
-      // Parse time from "8:00" format and create ISO 8601 datetime strings
-      const parseTime = (time: string) => {
-        const [hours, minutes] = time.split(":")
-        const paddedHours = hours.padStart(2, "0")
-        const paddedMinutes = minutes.padStart(2, "0")
-        // Create ISO format: YYYY-MM-DDTHH:MM:SS.sssZ
-        return `${year}-${month}-${day}T${paddedHours}:${paddedMinutes}:00.000Z`
-      }
-
-      // Format as ISO for Supabase. Combining the starttime or endtime with the date object made from selecteddate
-      const formattedStartTime = parseTime(startTime)
-      const formattedEndTime = parseTime(endTime)
+      setSelectedIsoRange?.(isoRange)
 
       // CALLS SUPABASE HERE
       // Check if the booking exist on each meetingroom (if not then we can book it)
       const data = await checkBookings({
-        startTime: formattedStartTime,
-        endTime: formattedEndTime,
+        startTime: isoRange.start,
+        endTime: isoRange.end,
       })
 
       if (data) {

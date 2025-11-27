@@ -1,43 +1,45 @@
 "use client"
 
-import { getAvailableRooms } from "@/data/supabase"
-import { doubleBookingType, roomType } from "@/lib/types"
+import { createBooking, getAvailableRooms } from "@/data/supabase"
+import { doubleBookingType, isoTimeRange, roomType } from "@/lib/types"
 import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import Toast from "./ui/toast"
 
 export function RoomTable({
-  setDoubleBookings: _setDoubleBookings,
+  setDoubleBookings,
   doubleBookings,
   timeRange,
+  timeRangeIso,
 }: {
   // Contains the doubleBookingType or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   doubleBookings: doubleBookingType | undefined
   timeRange?: string
+  timeRangeIso?: isoTimeRange
 }) {
   const [opened, { open, close }] = useDisclosure(false)
   const [showToast, setShowToast] = useState(false)
   const [availableRooms, setAvailableRooms] = useState<roomType>([])
   const [isLoadingRooms, setIsLoadingRooms] = useState(false)
   const [bookingInfo, setBookingInfo] = useState<{
-    room: string
+    roomId: string
     capacity: string
     availability: string
   } | null>(null)
 
   const handleOpenBooking = ({
-    room,
+    roomId,
     capacity,
     availability,
   }: {
-    room: string
+    roomId: string
     capacity: string
     availability: string
   }) => {
     // Sets the booking info that the modal then displays
-    setBookingInfo({ room, capacity, availability })
+    setBookingInfo({ roomId, capacity, availability })
     // Opens the modal
     open()
   }
@@ -76,11 +78,49 @@ export function RoomTable({
     </Badge>
   )
 
+  // Create a booking
+  const handleCreateBooking = async () => {
+    if (!bookingInfo?.roomId || !timeRangeIso) {
+      console.warn("Missing booking info or time range")
+      return
+    }
+
+    try {
+      const { data, error } = await createBooking(
+        timeRangeIso.start,
+        timeRangeIso.end,
+        bookingInfo.roomId
+      )
+
+      if (error) {
+        console.error("Failed to create booking:", error)
+        return
+      }
+
+      if (data) {
+        // Filter out the availble room based on room_id to remove from the UI in addition to the db
+        // setAvailableRooms()
+        setShowToast(true)
+        close()
+      }
+    } catch (error) {
+      console.error("Error creating booking:", error)
+    }
+  }
+
   const availabilityText = timeRange ?? "-"
 
   return (
-    <Paper radius="lg" withBorder style={{ overflow: "hidden", minHeight: 350 }}>
-      <Toast message="Room booked succesfully" showToast={showToast} setShowToast={setShowToast} />
+    <Paper
+      radius="lg"
+      withBorder
+      style={{ overflow: "hidden", minHeight: 350 }}
+    >
+      <Toast
+        message="Room booked succesfully"
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
       {/* Modal with currently clicked room/booking details */}
       <Modal
         radius="md"
@@ -91,7 +131,7 @@ export function RoomTable({
       >
         <div className="mb-4 space-y-1 text-sm">
           <div>
-            <strong>Lokale:</strong> {bookingInfo?.room ?? "-"}
+            <strong>Lokale:</strong> {bookingInfo?.roomId ?? "-"}
           </div>
           <div>
             <strong>Kapacitet:</strong> {bookingInfo?.capacity ?? "-"}
@@ -101,12 +141,7 @@ export function RoomTable({
           </div>
         </div>
         <div className="flex justify-between">
-          <Button
-            onClick={() => {
-              setShowToast(true)
-              close()
-            }}
-          >
+          <Button onClick={handleCreateBooking} disabled={!timeRangeIso}>
             Book
           </Button>
           <Button onClick={close} color="red">
@@ -154,7 +189,7 @@ export function RoomTable({
             {isLoadingRooms && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
-                  <Loader size="sm"/>
+                  <Loader size="sm" />
                 </Table.Td>
               </Table.Tr>
             )}
@@ -169,6 +204,7 @@ export function RoomTable({
               availableRooms.map(({ room_id, room_size }, index: number) => {
                 const roomLabel = room_id ?? "-"
                 const capacityLabel = room_size ? `${room_size} personer` : "-"
+                const isBookable = Boolean(room_id)
 
                 return (
                   <Table.Tr key={`${room_id ?? index}-${index}`}>
@@ -179,13 +215,15 @@ export function RoomTable({
                     <Table.Td>
                       <Button
                         onClick={() =>
+                          room_id &&
                           handleOpenBooking({
-                            room: roomLabel,
+                            roomId: room_id,
                             capacity: capacityLabel,
                             availability: availabilityText,
                           })
                         }
                         size="sm"
+                        disabled={!isBookable}
                       >
                         Book
                       </Button>

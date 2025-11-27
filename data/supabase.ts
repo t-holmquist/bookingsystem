@@ -130,11 +130,32 @@ export const deleteBooking = async (booking_id: number) => {
   const supabase = SupabaseClient()
 
   const { data, error } = await supabase
-  .from('bookings')
-  .delete()
-  .eq('id', booking_id)
-  .select()
-  .single()
+    .from("bookings")
+    .delete()
+    .eq("id", booking_id)
+    .select()
+    .single()
 
-  return {error: error, data: data}
+  return { error: error, data: data }
+}
+
+// Deletes a booking. Recieves ISOformatted start and end time and the room_id. The rest will be autofilled by supabase
+export const createBooking = async (
+  starting_at: string,
+  ending_at: string,
+  room_id: string
+) => {
+  const supabase = SupabaseClient()
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert({
+      starting_at,
+      ending_at,
+      room_id,
+    })
+    .select()
+    .single()
+
+  return { error, data }
 }
