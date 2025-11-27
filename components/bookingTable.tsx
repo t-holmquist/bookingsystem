@@ -9,15 +9,16 @@ import { formatDate, formatTime } from "@/utils/timeAndDateFormat"
 import { AuthContext } from "@/providers/auth-provider"
 
 export function BookingTable() {
-  const [opened, { open, close }] = useDisclosure(false)
-  const [showToast, setShowToast] = useState(false)
-  const [isLoadingBookings, setIsLoadingBookings] = useState(false)
+  const [opened, { open, close }] = useDisclosure(false) // Modal state
+  const [showToast, setShowToast] = useState(false) // Sets toast to visible, will auto-set to false after x seconds
+  const [isDeleting, setIsDeleting] = useState(false) // Showning loader on delete booking
+  const [isLoadingBookings, setIsLoadingBookings] = useState(false) // Loading booking state
   const [cancelInfo, setCancelInfo] = useState<{
     room: string
     date: string
     time: string
     id: number
-  } | null>(null)
+  } | null>(null) // Modal booking cancellation info
   const [userBookings, setUserBookings] = useState<Array<{
     id: number
     starting_at: string
@@ -27,7 +28,7 @@ export function BookingTable() {
       floor: number
       room_size: number
     }
-  }> | null>(null)
+  }> | null>(null) // User specific bookings
 
   // Gets the user session to pass the user id it to getUserBookings
   const user = useContext(AuthContext)
@@ -52,7 +53,7 @@ export function BookingTable() {
 
   // Fetch user specific bookings
   useEffect(() => {
-    // Wait until we actually have a user before trying to fetch bookings. This useEffects runs each time auth "User" updates. 
+    // Wait until we actually have a user before trying to fetch bookings. This useEffects runs each time auth "User" updates.
     if (!user || !user.id) return
 
     const getBookings = async () => {
@@ -75,31 +76,38 @@ export function BookingTable() {
     getBookings()
   }, [user])
 
-
   // Delete a booking
   const handleDeleteBooking = async () => {
+    if (cancelInfo?.id) {
+      try {
+        setIsDeleting(true)
+        const { data, error } = await deleteBooking(cancelInfo.id)
 
-    if(cancelInfo?.id) {
-      const { data, error } = await deleteBooking(cancelInfo.id)
-
-      // Update the UI and remove deleted booking from the userBookingslist
-      if(!error && data && userBookings) {
-        setUserBookings(
-          userBookings.filter(item =>
-            item.id !== data.id
-          )
-        )
-        setShowToast(true)
-        close()
-      } else {
-        console.log(error?.message);
+        // Update the UI and remove deleted booking from the userBookingslist
+        if (!error && data && userBookings) {
+          setUserBookings(userBookings.filter((item) => item.id !== data.id))
+          setShowToast(true)
+          close()
+        }
+      } catch (error) {
+        console.log("Error deleting booking")
+      } finally {
+        setIsDeleting(false)
       }
     }
   }
 
   return (
-    <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
-      <Toast message="Booking deleted succesfully" showToast={showToast} setShowToast={setShowToast} />
+    <Paper
+      radius="lg"
+      withBorder
+      style={{ overflow: "hidden", minHeight: 350 }}
+    >
+      <Toast
+        message="Booking deleted succesfully"
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
       {/* Modal with currently clicked room/booking details */}
       <Modal
         radius="md"
@@ -120,15 +128,10 @@ export function BookingTable() {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button
-          color="red"
-            onClick={handleDeleteBooking}
-          >
+          <Button loading={isDeleting} color="red" onClick={handleDeleteBooking}>
             Ja
           </Button>
-          <Button onClick={close}>
-            Nej
-          </Button>
+          <Button onClick={close}>Nej</Button>
         </div>
       </Modal>
       {/* Tabel that displays all the roomdata */}
@@ -172,7 +175,7 @@ export function BookingTable() {
             {isLoadingBookings && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
-                  <Loader size="sm"/>
+                  <Loader size="sm" />
                 </Table.Td>
               </Table.Tr>
             )}
@@ -186,7 +189,7 @@ export function BookingTable() {
                   </Table.Td>
                 </Table.Tr>
               )}
-              {/* If not loading and data is present (finished loading) -> render data */}
+            {/* If not loading and data is present (finished loading) -> render data */}
             {!isLoadingBookings &&
               userBookings &&
               userBookings.map(
@@ -212,7 +215,7 @@ export function BookingTable() {
                               room: room_id,
                               date: bookingDate,
                               time: timeRange,
-                              id: id
+                              id: id,
                             })
                           }
                           color="red"

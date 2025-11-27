@@ -79,7 +79,7 @@ export function RoomTable({
   const availabilityText = timeRange ?? "-"
 
   return (
-    <Paper radius="lg" withBorder style={{ overflow: "hidden" }}>
+    <Paper radius="lg" withBorder style={{ overflow: "hidden", minHeight: 350 }}>
       <Toast message="Room booked succesfully" showToast={showToast} setShowToast={setShowToast} />
       {/* Modal with currently clicked room/booking details */}
       <Modal
