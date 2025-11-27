@@ -26,3 +26,17 @@ export type roomType = Array<{
   room_size: string
   floor: string
 }>
+
+
+// Type for join between booking and room (as returned from Supabase join query)
+export type bookingWithRoomType = Array<{
+  id: number
+  starting_at: string
+  ending_at: string
+  room_id: string
+  meetingsrooms: Array<{
+    room_size: number
+    floor: number
+  }>
+}>
+

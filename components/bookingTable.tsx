@@ -64,7 +64,8 @@ export function BookingTable() {
         const bookings = await getUserBookings(user.id)
 
         if (bookings) {
-          setUserBookings(bookings)
+          // TODO: Should fix: Cannot read types from supabase. 
+          setUserBookings(bookings as any)
         }
       } catch (error) {
         console.log("Error fetching bookings", error)
