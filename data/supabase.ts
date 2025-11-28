@@ -55,7 +55,8 @@ export const checkBookings = async ({
 // I got an array of bookings with room_ids that i dont want the room_id for
 // I want to get all rooms except the rooms with the room_ids in the doublebookings array
 export const getAvailableRooms = async (
-  doubleBookings?: doubleBookingType
+  doubleBookings?: doubleBookingType,
+  selectedFloor?: string | null
 ): Promise<roomType> => {
   const supabase = SupabaseClient()
 
@@ -70,8 +71,13 @@ export const getAvailableRooms = async (
       )
     : []
 
-  // Fetch all rooms from the meetingsroom table
-  const { data, error } = await supabase.from("meetingsrooms").select("*")
+  // Fetch rooms from the meetingsroom table, optionally filtered by floor
+  let query = supabase.from("meetingsrooms").select("*")
+  if (selectedFloor) {
+    query = query.eq("floor", selectedFloor)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error("Error fetching available rooms:", error)

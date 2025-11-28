@@ -12,12 +12,14 @@ export function RoomTable({
   doubleBookings,
   timeRange,
   timeRangeIso,
+  selectedFloor,
 }: {
   // Contains the doubleBookingType or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   doubleBookings: doubleBookingType | undefined
   timeRange?: string
   timeRangeIso?: isoTimeRange
+  selectedFloor?: string | null
 }) {
   const [opened, { open, close }] = useDisclosure(false) // Modal state for booking details
   const [showToast, setShowToast] = useState(false) // Toast state for booking success
@@ -53,7 +55,7 @@ export function RoomTable({
     const fetchRooms = async () => {
       setIsLoadingRooms(true)
       try {
-        const rooms = await getAvailableRooms(doubleBookings)
+        const rooms = await getAvailableRooms(doubleBookings, selectedFloor)
         if (isMounted) {
           setAvailableRooms(rooms)
         }
@@ -71,7 +73,7 @@ export function RoomTable({
     return () => {
       isMounted = false
     }
-  }, [doubleBookings])
+  }, [doubleBookings, selectedFloor])
 
   // Create a booking
   const handleCreateBooking = async () => {
@@ -95,7 +97,9 @@ export function RoomTable({
 
       if (data) {
         // Filter out the availble room based on room_id to remove from the UI in addition to the db
-        setAvailableRooms(availableRooms.filter((item) => item.room_id !== data.room_id))
+        setAvailableRooms(
+          availableRooms.filter((item) => item.room_id !== data.room_id)
+        )
         setShowToast(true)
         close()
       }

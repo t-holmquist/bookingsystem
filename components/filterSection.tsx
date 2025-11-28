@@ -12,16 +12,19 @@ const FilterSection = ({
   setDoubleBookings,
   setSelectedTimeRange,
   setSelectedIsoRange,
+  setSelectedFloor,
+  selectedFloor,
 }: {
   // Contains the roomtype or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   setSelectedTimeRange?: Dispatch<SetStateAction<string | undefined>>
   setSelectedIsoRange?: Dispatch<SetStateAction<isoTimeRange | undefined>>
+  setSelectedFloor: Dispatch<SetStateAction<string | null>>
+  selectedFloor: string | null
 }) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(
     new Date().toISOString()
   )
-  const [selectedFloor, setSelectedFloor] = useState<string | null>("Sal. 3")
   const [startTime, setStartTime] = useState<string | null>("8:00")
   const [endTime, setEndTime] = useState<string | null>("16:00")
 

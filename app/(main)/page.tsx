@@ -17,7 +17,7 @@ export default function Home() {
   const [selectedIsoRange, setSelectedIsoRange] = useState<
     isoTimeRange | undefined
   >(undefined)
-
+  const [selectedFloor, setSelectedFloor] = useState<string | null>("Sal. 3")
   return (
     <div className="flex flex-col h-screen bg-ek-bg p-8">
       <Header title="Book et lokale" />
@@ -27,6 +27,8 @@ export default function Home() {
           setDoubleBookings={setDoubleBookings}
           setSelectedTimeRange={setSelectedTimeRange}
           setSelectedIsoRange={setSelectedIsoRange}
+          selectedFloor={selectedFloor}
+          setSelectedFloor={setSelectedFloor}
         />
         {/* Room result list section */}
         <section className="py-5 px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
@@ -38,6 +40,7 @@ export default function Home() {
             setDoubleBookings={setDoubleBookings}
             timeRange={selectedTimeRange}
             timeRangeIso={selectedIsoRange}
+            selectedFloor={selectedFloor}
           />
         </section>
       </section>
