@@ -13,10 +13,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const supabase = SupabaseClient()
-    // Gets the user if there is an existing session. Calls the auth server in supabase.
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user ?? null)
+    let mounted = true
+
+    const fetchInitialUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (mounted) {
+        setUser(user ?? null)
+      }
+    }
+
+    fetchInitialUser()
+
+    // Listen for auth state changes, so that we can update the user state when the user logs in or out
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) {
+        setUser(session?.user ?? null)
+      }
     })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   return (

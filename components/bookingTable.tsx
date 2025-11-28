@@ -53,8 +53,13 @@ export function BookingTable() {
 
   // Fetch user specific bookings
   useEffect(() => {
-    // Wait until we actually have a user before trying to fetch bookings. This useEffects runs each time auth "User" updates.
-    if (!user || !user.id) return
+    // If there is no authenticated user, make sure we clear the previous data
+    if (!user || !user.id) {
+      setUserBookings(null)
+      return
+    }
+
+    let isCancelled = false
 
     const getBookings = async () => {
       // create an inner join on the bookings table and meetingsrooms table and gets all the booking/room info back
@@ -63,19 +68,25 @@ export function BookingTable() {
         setIsLoadingBookings(true)
         const bookings = await getUserBookings(user.id)
 
-        if (bookings) {
-          // TODO: Should fix: Cannot read types from supabase. 
+        if (!isCancelled && bookings) {
+          // TODO: Should fix: Cannot read types from supabase.
           setUserBookings(bookings as any)
         }
       } catch (error) {
         console.log("Error fetching bookings", error)
       } finally {
-        setIsLoadingBookings(false)
+        if (!isCancelled) {
+          setIsLoadingBookings(false)
+        }
       }
     }
 
     getBookings()
-  }, [user])
+    // Cleanup function to cancel in-flight requests when user changes or component unmounts
+    return () => {
+      isCancelled = true
+    }
+  }, [user?.id])
 
   // Delete a booking
   const handleDeleteBooking = async () => {
@@ -129,7 +140,11 @@ export function BookingTable() {
           </div>
         </div>
         <div className="flex justify-between">
-          <Button loading={isDeleting} color="red" onClick={handleDeleteBooking}>
+          <Button
+            loading={isDeleting}
+            color="red"
+            onClick={handleDeleteBooking}
+          >
             Ja
           </Button>
           <Button onClick={close}>Nej</Button>
