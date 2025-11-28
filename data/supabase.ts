@@ -1,4 +1,4 @@
-import { doubleBookingType, roomType } from "@/lib/types"
+import { doubleBookingType, profileDataType, roomType } from "@/lib/types"
 import { SupabaseClient } from "../utils/supabaseClient"
 
 // Get the role to display different ui in certain scenarios
@@ -10,7 +10,7 @@ export const getProfileData = async () => {
   // With their own authid. So they will always only get a single row back.
   const { data } = await supabase.from("profiles").select().single()
 
-  return data
+  return data as profileDataType
 }
 
 // Get the role to display different ui in certain scenarios
