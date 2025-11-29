@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import ActiveIndicator from "./ui/activeIndicator"
 import { getProfileData } from "@/data/supabase"
 import { profileDataType } from "@/lib/types"
+import { motion } from "motion/react"
 import { Loader } from "@mantine/core"
 
 const Header = ({ title }: { title: string }) => {
@@ -27,8 +28,16 @@ const Header = ({ title }: { title: string }) => {
   }, [])
 
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl font-bold">{title}</h1>
+    <div
+      className="space-y-2"
+    >
+      <motion.h1
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="text-3xl font-bold"
+      >
+        {title}
+      </motion.h1>
       <div className="flex gap-2 w-fit bg-[#ebfbee] border border-gray-200 items-center py-1 px-2 rounded-md">
         {profileData ? (
           <>
