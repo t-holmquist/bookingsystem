@@ -7,6 +7,7 @@ import Toast from "./ui/toast"
 import { deleteBooking, getUserBookings } from "@/data/supabase"
 import { formatDate, formatTime } from "@/utils/timeAndDateFormat"
 import { AuthContext } from "@/providers/auth-provider"
+import { motion } from "motion/react"
 
 export function BookingTable() {
   const [opened, { open, close }] = useDisclosure(false) // Modal state
@@ -186,7 +187,23 @@ export function BookingTable() {
               </Table.Th>
             </Table.Tr>
           </Table.Thead>
-          <Table.Tbody>
+
+          {/* Table body with animations. Parent controls the stagger effect. Children are the individual rows. */}
+          <motion.tbody
+            key={userBookings?.length ?? 0}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.05,
+                },
+              },
+            }}
+            // This is a safe guard to ensure the rows are displayed in the correct order.
+            style={{ display: "table-row-group" }}
+          >
             {/* If loading data then show spinner */}
             {isLoadingBookings && (
               <Table.Tr>
@@ -219,7 +236,14 @@ export function BookingTable() {
                   const bookingDate = formatDate(starting_at)
 
                   return (
-                    <Table.Tr key={id}>
+                    // Each row is an individual motion.tr component
+                    <motion.tr
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      key={id}
+                    >
                       <Table.Td>{room_id}</Table.Td>
                       <Table.Td>{`${meetingsrooms.room_size} personer`}</Table.Td>
                       <Table.Td>{timeRange}</Table.Td>
@@ -240,11 +264,11 @@ export function BookingTable() {
                           Annuller
                         </Button>
                       </Table.Td>
-                    </Table.Tr>
+                    </motion.tr>
                   )
                 }
               )}
-          </Table.Tbody>
+          </motion.tbody>
         </Table>
       </Table.ScrollContainer>
     </Paper>
