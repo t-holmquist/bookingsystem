@@ -9,6 +9,8 @@ import { useEffect, useState } from "react"
 import { getProfileData } from "@/data/supabase"
 import { profileDataType } from "@/lib/types"
 import { SupabaseClient } from "@/utils/supabaseClient"
+import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react"
+import { motion } from "motion/react"
 
 const Sidebar = () => {
   // User data tracked by hook
@@ -16,6 +18,7 @@ const Sidebar = () => {
     undefined
   )
   const [isLoading, setIsLoading] = useState(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [userImageUrl, setUserImageUrl] = useState("")
 
   // The supabase client
@@ -75,16 +78,56 @@ const Sidebar = () => {
     }
   }
 
+  const handleSidebarCollapse = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed)
+  }
+
   return (
-    <section className="bg-ek-desert justify-between border-r border-gray-300 w-1/5 h-screen p-3 flex flex-col">
+    <section
+      className={`bg-ek-purple justify-between border-r border-gray-300 ${
+        isSidebarCollapsed ? "w-14 p-1" : "w-68 p-3"
+      } transition-all duration-300 h-screen relative flex flex-col`}
+    >
+      <button
+        onClick={handleSidebarCollapse}
+        className="absolute top-3 hover:bg-slate-200 cursor-pointer hover:rounded-full p-1 -right-7"
+      >
+        {isSidebarCollapsed ? (
+          <ArrowRightFromLine
+            size={16}
+            className="transition-all duration-300 text-ek-text-grey"
+          />
+        ) : (
+          <ArrowLeftFromLine
+            size={16}
+            className="transition-all duration-300 text-ek-text-grey"
+          />
+        )}
+      </button>
       {/* Logo and title */}
-      <div className="space-y-4">
+      <div className="space-y-8 mt-2">
         <div className="items-center flex flex-col">
-          <Image src="/ek_logo.png" width={300} height={100} alt="logo" />
-          <h2 className="text-2xl font-semibold">Booking Lyngby</h2>
+          {isSidebarCollapsed ? (
+            <Image
+              className="p-1"
+              src="/logo-ek-letters.png"
+              width={50}
+              height={50}
+              alt="logo"
+            />
+          ) : (
+            <>
+              <Image src="/logo.png" width={300} height={100} alt="logo" />
+            </>
+          )}
         </div>
         {/* Nav items */}
-        <div className="flex flex-col gap-2">
+        <div
+          
+          className={`flex flex-col ${
+            isSidebarCollapsed ? "items-center" : "items-start"
+          } gap-2`}
+        >
           {navbarItems.map(({ title, href, icon }, idx) => {
             // Capitalize the icon to make react understand it is a component from lucide
             const Icon = icon
@@ -94,12 +137,25 @@ const Sidebar = () => {
                 href={href}
                 className={`flex ${
                   pathname === href && "bg-ek-hover"
-                } items-center gap-2 p-2 rounded-md`}
+                } items-center gap-2 ${
+                  isSidebarCollapsed ? "p-1" : "p-2"
+                } rounded-md`}
               >
-                <div className="bg-[#E7F5FF] rounded-md p-2 border border-gray-300">
+                <div className="bg-[#E7F5FF] rounded-md p-1 border border-gray-300">
                   <Icon size={20} className="text-ek-blue" />
                 </div>
-                <span className="text-lg">{title}</span>
+                {!isSidebarCollapsed && (
+                  <motion.span 
+                  // Create delay on text so that it doesnt jump
+                  initial={{opacity: 0}}
+                  animate={{opacity: 1}}
+                  transition={{
+                    delay: 0.2
+                  }}
+                  className="text-lg">
+                    {title}
+                  </motion.span>
+                )}
               </Link>
             )
           })}
@@ -107,7 +163,9 @@ const Sidebar = () => {
       </div>
       {/* User information */}
       {profileData && userImageUrl ? (
-        <div className="flex gap-3 items-center">
+        <div
+          className={`flex gap-3 items-center ${isSidebarCollapsed && "p-1"}`}
+        >
           <Image
             src={userImageUrl}
             width={120}
@@ -115,21 +173,23 @@ const Sidebar = () => {
             alt="mock user"
             className="border border-gray-300 rounded-md"
           />
-          <div className="space-y-2">
-            <p className="text-sm font-bold">{profileData.full_name}</p>
-            <p className="text-ek-text-grey text-xs">
-              {profileData.role === "teacher" ? "Lærer" : "Studerende"}
-            </p>
-            <p className="text-ek-text-grey text-xs">{profileData.email}</p>
-            <Button
-              loading={isLoading}
-              onClick={handleSignOut}
-              color="black"
-              size="xs"
-            >
-              Log ud
-            </Button>
-          </div>
+          {!isSidebarCollapsed && (
+            <div className="space-y-2">
+              <p className="text-sm font-bold">{profileData.full_name}</p>
+              <p className="text-ek-text-grey text-xs">
+                {profileData.role === "teacher" ? "Lærer" : "Studerende"}
+              </p>
+              <p className="text-ek-text-grey text-xs">{profileData.email}</p>
+              <Button
+                loading={isLoading}
+                onClick={handleSignOut}
+                color="black"
+                size="xs"
+              >
+                Log ud
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <>
