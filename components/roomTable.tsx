@@ -13,11 +13,13 @@ export function RoomTable({
   timeRange,
   timeRangeIso,
   selectedFloor,
+  refreshKey,
 }: {
   // Contains the doubleBookingType or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   doubleBookings: doubleBookingType | undefined
   timeRange?: string
+  refreshKey: number
   timeRangeIso?: isoTimeRange
   selectedFloor?: string | null
 }) {
@@ -73,7 +75,7 @@ export function RoomTable({
     return () => {
       isMounted = false
     }
-  }, [doubleBookings, selectedFloor])
+  }, [doubleBookings, selectedFloor, refreshKey]) // Refresh key is used to force a re-render of the component when a user has booked a room
 
   // Create a booking
   const handleCreateBooking = async () => {
