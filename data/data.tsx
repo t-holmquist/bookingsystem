@@ -1,12 +1,12 @@
 import { Badge, Button } from "@mantine/core"
-import { Home, HelpCircle, Calendar } from "lucide-react"
+import { HelpCircle, Calendar, Search } from "lucide-react"
 
 // Navbar items
 export const navbarItems = [
   {
     title: "Book lokaler",
     href: "/",
-    icon: Home,
+    icon: Search,
   },
   {
     title: "Mine bookinger",

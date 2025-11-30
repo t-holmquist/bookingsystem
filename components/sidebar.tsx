@@ -135,14 +135,12 @@ const Sidebar = () => {
               <Link
                 key={idx}
                 href={href}
-                className={`flex ${
-                  pathname === href && "bg-ek-hover"
-                } items-center gap-2 ${
-                  isSidebarCollapsed ? "p-1" : "p-2"
+                className={`flex  items-center gap-2 ${
+                  isSidebarCollapsed ? "p-1" : "py-1 px-2"
                 } rounded-md`}
               >
-                <div className="bg-[#E7F5FF] rounded-md p-1 border border-gray-300">
-                  <Icon size={20} className="text-ek-blue" />
+                <div className={`${pathname === href ? "bg-ek-blue" : "bg-[#E7F5FF]"} rounded-md p-1 border border-gray-300`}>
+                  <Icon size={20} color={pathname === href ? "white" : "black"} />
                 </div>
                 {!isSidebarCollapsed && (
                   <motion.span 
@@ -152,7 +150,7 @@ const Sidebar = () => {
                   transition={{
                     delay: 0.2
                   }}
-                  className="text-lg">
+                  className={`text-lg ${pathname === href && "font-semibold"}`}>
                     {title}
                   </motion.span>
                 )}
