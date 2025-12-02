@@ -84,7 +84,7 @@ const Sidebar = () => {
 
   return (
     <section
-      className={`bg-ek-purple justify-between border-r border-gray-300 ${
+      className={`bg-ek-yellow justify-between border-r border-gray-300 ${
         isSidebarCollapsed ? "w-14 p-1" : "w-68 p-3"
       } transition-all duration-300 h-screen relative flex flex-col`}
     >
