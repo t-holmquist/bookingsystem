@@ -132,7 +132,7 @@ const FilterSection = ({
           <p className="text-ek-text-grey text-sm">
             Vælg det ønskede tidspunkt
           </p>
-          <EndTimeSelect endTime={endTime} setEndTime={setEndTime} />
+          <EndTimeSelect startTime={startTime} endTime={endTime} setEndTime={setEndTime} />
         </div>
       </section>
     </div>
