@@ -135,7 +135,7 @@ const Sidebar = () => {
               <Link
                 key={idx}
                 href={href}
-                className={`flex  items-center gap-2 ${
+                className={`flex items-center hover:bg-slate-100 ${pathname === href && "bg-slate-100 border border-slate-300"} gap-2 ${
                   isSidebarCollapsed ? "p-1" : "py-1 px-2"
                 } rounded-md`}
               >
