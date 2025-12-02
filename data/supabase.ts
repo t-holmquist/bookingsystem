@@ -32,9 +32,9 @@ export const checkBookings = async ({
     .from("bookings")
     .select("*")
     // Booking starts before or at our end time
-    .lte("starting_at", endTime)
+    .lt("starting_at", endTime)
     // Booking ends at or after our start time
-    .gte("ending_at", startTime)
+    .gt("ending_at", startTime)
 
   if (error) {
     console.error("Error checking bookings:", error)
