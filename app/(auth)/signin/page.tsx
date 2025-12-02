@@ -13,7 +13,7 @@ const SignIn = () => {
         />
       </div>
       <div>
-        <Image src="/ek_logo.png" width={400} height={100} alt="logo" />
+        <Image className="mb-10" src="/logo.png" width={400} height={100} alt="logo" />
         <SignInForm />
       </div>
     </section>

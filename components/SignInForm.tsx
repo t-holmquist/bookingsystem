@@ -49,7 +49,7 @@ export default function SignInForm() {
   }
 
   return (
-    <Container size={420}>
+    <Container size={420} style={{ width: "100%" }}>
       <form onSubmit={handleSignIn}>
         <Paper p={22} radius="md">
           <TextInput
