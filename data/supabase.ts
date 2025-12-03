@@ -61,14 +61,9 @@ export const getAvailableRooms = async (
   const supabase = SupabaseClient()
 
   // Extract unique room_ids from doubleBookings
+  // Array.from() creates a new array from the doubleBookings array and converts it to a set to remove duplicates
   const doubleBookedRoomIds = doubleBookings
-    ? Array.from(
-        new Set(
-          doubleBookings
-            .map((booking) => booking.room_id)
-            .filter((roomId): roomId is string => Boolean(roomId))
-        )
-      )
+    ? Array.from(new Set(doubleBookings.map((booking) => booking.room_id)))
     : []
 
   // Fetch rooms from the meetingsroom table, optionally filtered by floor
@@ -90,6 +85,7 @@ export const getAvailableRooms = async (
   }
 
   // Filter out rooms that have room_ids in the doubleBookedRoomIds array
+  // If the room_id is not in the doubleBookedRoomIds array, then the room is available
   const availableRooms = (data ?? []).filter(
     (room) => !doubleBookedRoomIds.includes(room.room_id)
   )
