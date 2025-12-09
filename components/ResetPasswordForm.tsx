@@ -41,7 +41,8 @@ const ResetPasswordForm = () => {
       )
 
       if (data) alert("Password reset link sendt til din email")
-      if (error) alert("Der var en fejl med at sende password reset link. Prøv igen.")
+      if (error)
+        alert("Der var en fejl med at sende password reset link. Prøv igen.")
     } catch (error) {
       console.log("Error sending password reset link")
     }
@@ -52,12 +53,14 @@ const ResetPasswordForm = () => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event == "PASSWORD_RECOVERY") {
         const newPassword = prompt("Indtast dit nye password")
-        const { data, error } = await supabase.auth.updateUser({
-          password: newPassword,
-        })
-        if (data) alert("Password er opdateret!")
-        if (error)
-          alert("Der var en fejl med at opdatere dit password. Prøv igen.")
+        if (newPassword) {
+          const { data, error } = await supabase.auth.updateUser({
+            password: newPassword,
+          })
+          if (data) alert("Password er opdateret!")
+          if (error)
+            alert("Der var en fejl med at opdatere dit password. Prøv igen.")
+        }
       }
     })
   }, [])
