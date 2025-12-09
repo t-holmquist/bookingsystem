@@ -128,6 +128,7 @@ export function BookingTable() {
         onClose={close}
         title="Er du sikker på at du vil annullere denne tid?"
         centered
+        size="sm"
       >
         <div className="mb-4 space-y-1 text-sm">
           <div>
@@ -140,7 +141,7 @@ export function BookingTable() {
             <strong>Tidspunkt</strong> {cancelInfo?.time}
           </div>
         </div>
-        <div className="flex justify-between">
+          <div className="flex gap-2">
           <Button
             loading={isDeleting}
             color="red"

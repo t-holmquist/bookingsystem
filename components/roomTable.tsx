@@ -132,6 +132,7 @@ export function RoomTable({
         onClose={close}
         title="Overblik over booking"
         centered
+        size="xs"
       >
         <div className="mb-4 space-y-1 text-sm">
           <div>
@@ -144,7 +145,7 @@ export function RoomTable({
             <strong>Tidsrum:</strong> {bookingInfo?.availability ?? "-"}
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className="flex gap-2">
           <Button
             loading={isBooking}
             onClick={handleCreateBooking}
