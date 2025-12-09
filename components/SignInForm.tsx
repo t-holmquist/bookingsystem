@@ -50,6 +50,7 @@ export default function SignInForm() {
         email: values.email,
         password: values.password,
       })
+      if (error) alert("Der var en fejl med at logge ind. Prøv igen.")
 
       // If we get a token then we succeded and we can redirect to teacher dashboard
       // Redirecting to the specific dynamic user id. We get the user id back from supabase.
