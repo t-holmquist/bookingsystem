@@ -8,21 +8,34 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function SignInForm() {
-  // State variables for email/password
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // Routing to redirect the user if the succesfully logged in
   const router = useRouter()
 
-  const handleSignIn = async (e: any) => {
-    e.preventDefault()
+  // Form hook from mantine to hold form state and validation
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
 
+    // Validate function from mantine
+    validate: {
+      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Ugyldig email"),
+      password: (val) =>
+        val.length <= 6 ? "Kodeordet skal være over 6 karaktere langt" : null,
+    },
+  })
+
+
+  // Sign in handler
+  const handleSignIn = async (values: { email: string; password: string }) => {
     // TRYING TO SIGN IN HERE
     try {
       setIsLoading(true)
@@ -32,8 +45,8 @@ export default function SignInForm() {
 
       // Try to log the user in if there exist a user it succeds
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
+        email: values.email,
+        password: values.password,
       })
 
       // If we get a token then we succeded and we can redirect to teacher dashboard
@@ -50,15 +63,18 @@ export default function SignInForm() {
 
   return (
     <Container size={420} style={{ width: "100%" }}>
-      <form onSubmit={handleSignIn}>
+      <form onSubmit={form.onSubmit((values) => handleSignIn(values))}>
         <Paper p={22} radius="md">
           <TextInput
             label="Email"
             placeholder="you@mantine.dev"
             required
             radius="md"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            onChange={(event) =>
+              form.setFieldValue("email", event.currentTarget.value)
+            }
+            value={form.values.email}
+            error={form.errors.email} // Error prop. The values displayed is in the validate function of the useForm mantine hook
           />
           <PasswordInput
             label="Password"
@@ -66,10 +82,19 @@ export default function SignInForm() {
             required
             mt="md"
             radius="md"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
+            onChange={(event) =>
+              form.setFieldValue("password", event.currentTarget.value)
+            }
+            value={form.values.password}
+            error={form.errors.password}
           />
-          <Button loading={isLoading} type="submit" fullWidth mt="xl" radius="md">
+          <Button
+            loading={isLoading}
+            type="submit"
+            fullWidth
+            mt="xl"
+            radius="md"
+          >
             Sign in
           </Button>
         </Paper>
