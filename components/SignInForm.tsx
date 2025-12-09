@@ -2,8 +2,10 @@
 
 import { SupabaseClient } from "@/utils/supabaseClient"
 import {
+  Anchor,
   Button,
   Container,
+  Group,
   Paper,
   PasswordInput,
   TextInput,
@@ -88,6 +90,11 @@ export default function SignInForm() {
             value={form.values.password}
             error={form.errors.password}
           />
+          <Group justify="space-between" mt="lg">
+          <Anchor href="/glemtpassword" size="sm">
+            Glemt password?
+          </Anchor>
+        </Group>
           <Button
             loading={isLoading}
             type="submit"
