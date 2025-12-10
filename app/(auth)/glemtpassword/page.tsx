@@ -5,9 +5,8 @@ import Image from "next/image"
 export default function ForgotPassword() {
   
   return (
-    <section className="h-screen w-full flex justify-between px-60 items-center">
+    <section className="min-h-screen w-full flex flex-col gap-8 lg:flex-row lg:justify-between p-6 xl:px-60 items-center">
       <Image
-        className="mb-10"
         src="/logo.png"
         width={400}
         height={100}
