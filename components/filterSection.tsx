@@ -99,10 +99,10 @@ const FilterSection = ({
   }, [startTime, endTime, setSelectedTimeRange])
 
   return (
-    <div className="w-full bg-white rounded-3xl border border-gray-300 py-5 px-8">
+    <div className="w-full bg-white rounded-3xl border border-gray-300 p-3 lg:py-5 lg:px-8">
       <h2 className="text-xl font-semibold">Filter</h2>
       {/* Filter section */}
-      <section className="mt-8 flex justify-between items-center">
+      <section className="mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center">
         {/* Floor */}
         <div className="space-y-2">
           <h3>Etage</h3>

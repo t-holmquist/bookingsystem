@@ -9,9 +9,9 @@ export default function AuthLayout({
     <section>
       <div className="flex">
         {/* Sidebar */}
-        <Sidebar />
+        
         {/* Main content */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {children}
         </div>
       </div>

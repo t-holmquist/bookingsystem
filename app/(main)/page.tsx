@@ -24,7 +24,7 @@ export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0) // Loading state for refreshing the rooms. Better than a boolean because it will force a re-render of the component.
 
   return (
-    <div className="flex flex-col h-screen bg-ek-bg p-8">
+    <div className="flex flex-col min-h-screen bg-ek-bg p-3 lg:p-8">
       <Header title="Book et lokale" />
       <section className="mt-10 gap-10 flex flex-col h-full justify-between">
         {/* Filter section */}
@@ -36,7 +36,7 @@ export default function Home() {
           setSelectedFloor={setSelectedFloor}
         />
         {/* Room result list section */}
-        <section className="py-5 px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
+        <section className="p-3 lg:py-5 lg:px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Ledige lokaler</h2>
             <Button variant="light" size="xs" onClick={() => setRefreshKey(prev => prev + 1)}>
