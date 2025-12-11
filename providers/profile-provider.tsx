@@ -4,6 +4,7 @@ import { getProfileData } from "@/data/supabase"
 import { profileDataType } from "@/lib/types"
 import { SupabaseClient } from "@/utils/supabaseClient"
 import { createContext, useContext, useEffect, useState } from "react"
+import { AuthContext } from "./auth-provider"
 
 export const ProfileContext = createContext<{
   profileData: profileDataType | undefined
@@ -23,8 +24,16 @@ export const ProfileProvider = ({
   )
   const [userImageUrl, setUserImageUrl] = useState("")
   const supabase = SupabaseClient()
+  const user = useContext(AuthContext)
 
   useEffect(() => {
+    // Clear profile data when user logs out
+    if (!user) {
+      setProfileData(undefined)
+      setUserImageUrl("")
+      return
+    }
+
     let mounted = true
 
     const fetchProfileData = async () => {
@@ -53,7 +62,7 @@ export const ProfileProvider = ({
     return () => {
       mounted = false
     }
-  }, [])
+  }, [user?.id]) // Refetch when user changes
 
   return (
     <ProfileContext.Provider value={{ profileData, userImageUrl }}>
