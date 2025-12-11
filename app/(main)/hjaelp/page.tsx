@@ -5,7 +5,7 @@ import { bookingInstructions } from "@/data/data";
 
 const HjaelpSide = () => {
   return (
-    <div className="flex flex-col h-screen bg-ek-bg p-8">
+    <div className="flex flex-col min-h-screen bg-ek-bg p-8">
       <Header title="Sådan booker du" />
       <div className="mt-10 space-y-1">
         {bookingInstructions.map((instruction) => (
