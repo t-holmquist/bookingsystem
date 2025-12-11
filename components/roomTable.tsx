@@ -1,31 +1,25 @@
 "use client"
 
-import {
-  createBooking,
-  getAvailableRooms,
-  getProfileData,
-} from "@/data/supabase"
-import {
-  doubleBookingType,
-  isoTimeRange,
-  profileDataType,
-  roomType,
-} from "@/lib/types"
+import { createBooking, getAvailableRooms } from "@/data/supabase"
+import { doubleBookingType, isoTimeRange, roomType } from "@/lib/types"
 import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useEffect, useState } from "react"
 import Toast from "./ui/toast"
+import { useProfile } from "@/providers/profile-provider"
 
 export function RoomTable({
   doubleBookings,
-  timeRange,
+  startTime,
+  endTime,
   timeRangeIso,
   selectedFloor,
   refreshKey,
 }: {
   // Contains the doubleBookingType or undefined
   doubleBookings: doubleBookingType | undefined
-  timeRange?: string
+  startTime?: string | null
+  endTime?: string | null
   refreshKey: number
   timeRangeIso?: isoTimeRange
   selectedFloor?: string | null
@@ -40,10 +34,8 @@ export function RoomTable({
     capacity: string
     availability: string
   } | null>(null)
-  // User data tracked by hook
-  const [profileData, setProfileData] = useState<profileDataType | undefined>(
-    undefined
-  )
+  // User data from context
+  const { profileData } = useProfile()
 
   const handleOpenBooking = ({
     roomId,
@@ -123,20 +115,6 @@ export function RoomTable({
     }
   }
 
-  // Get the user profile information to ONLY render rooms that are meetingsrooms if the user is a student
-  useEffect(() => {
-    const getUserData = async () => {
-      // Get the profile data from supabase. Returns only one object from the authorized user
-      const userData = await getProfileData()
-
-      if (userData) {
-        setProfileData(userData)
-      }
-    }
-
-    getUserData()
-  }, [])
-
   // Filter the rooms based on the user role
   // If the user is a student, only show the rooms that are meetingsrooms (including 'mødelokale')
   // Default to student filter when profileData is not yet loaded to prevent students from seeing all rooms
@@ -144,6 +122,9 @@ export function RoomTable({
     !profileData || profileData?.role === "student"
       ? availableRooms.filter((room) => room.room_id?.includes("Mødelokale"))
       : availableRooms
+
+  // Compute time range display string from startTime and endTime
+  const timeRange = startTime && endTime ? `${startTime}-${endTime}` : undefined
 
   return (
     <Paper
@@ -264,7 +245,7 @@ export function RoomTable({
                           handleOpenBooking({
                             roomId: room_id,
                             capacity: capacityLabel,
-                            availability: timeRange ? timeRange : "",
+                            availability: timeRange ?? "",
                           })
                         }
                         size="sm"

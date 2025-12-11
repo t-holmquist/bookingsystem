@@ -5,21 +5,16 @@ import Link from "next/link"
 import { navbarItems } from "@/data/data"
 import { Button } from "@mantine/core"
 import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { getProfileData } from "@/data/supabase"
-import { profileDataType } from "@/lib/types"
+import { useState } from "react"
+import { useProfile } from "@/providers/profile-provider"
 import { SupabaseClient } from "@/utils/supabaseClient"
 import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react"
 import { motion } from "motion/react"
 
 const Sidebar = () => {
-  // User data tracked by hook
-  const [profileData, setProfileData] = useState<profileDataType | undefined>(
-    undefined
-  )
+  const { profileData, userImageUrl } = useProfile()
   const [isLoading, setIsLoading] = useState(false)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
-  const [userImageUrl, setUserImageUrl] = useState("")
 
   // The supabase client
   const supabase = SupabaseClient()
@@ -27,30 +22,6 @@ const Sidebar = () => {
   // Pathname hook to check for current pathname and change styling on navitems
   const pathname = usePathname()
   const router = useRouter()
-
-  // Get the user profile information on mount including the profile image
-  useEffect(() => {
-    const getUserData = async () => {
-      // Get the profile data from supabase. Returns only one object from the authorized user
-      const userData = await getProfileData()
-
-      if (userData) {
-        setProfileData(userData)
-
-        // Get the profile image from the supabase storage. Send in the user id, since the files are named that way.
-        // Gets a url from the file in supabase that i can use as the user image
-        const { data: userImage } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(`/${userData.user_id}.jpg`)
-
-        if (userImage) {
-          setUserImageUrl(userImage.publicUrl)
-        }
-      }
-    }
-
-    getUserData()
-  }, [])
 
   // Signs the user out
   const handleSignOut = async () => {
@@ -123,7 +94,6 @@ const Sidebar = () => {
         </div>
         {/* Nav items */}
         <div
-          
           className={`flex flex-col ${
             isSidebarCollapsed ? "items-center" : "items-start"
           } gap-2`}
@@ -135,22 +105,32 @@ const Sidebar = () => {
               <Link
                 key={idx}
                 href={href}
-                className={`flex items-center hover:bg-slate-100 ${pathname === href && "bg-slate-100 border border-slate-300"} gap-2 ${
-                  isSidebarCollapsed ? "p-1" : "py-1 px-2"
-                } rounded-md`}
+                className={`flex items-center hover:bg-slate-100 ${
+                  pathname === href && "bg-slate-100 border border-slate-300"
+                } gap-2 ${isSidebarCollapsed ? "p-1" : "py-1 px-2"} rounded-md`}
               >
-                <div className={`${pathname === href ? "bg-ek-blue" : "bg-[#E7F5FF]"} rounded-md p-1 border border-gray-300`}>
-                  <Icon size={20} color={pathname === href ? "white" : "black"} />
+                <div
+                  className={`${
+                    pathname === href ? "bg-ek-blue" : "bg-[#E7F5FF]"
+                  } rounded-md p-1 border border-gray-300`}
+                >
+                  <Icon
+                    size={20}
+                    color={pathname === href ? "white" : "black"}
+                  />
                 </div>
                 {!isSidebarCollapsed && (
-                  <motion.span 
-                  // Create delay on text so that it doesnt jump
-                  initial={{opacity: 0}}
-                  animate={{opacity: 1}}
-                  transition={{
-                    delay: 0.2
-                  }}
-                  className={`text-lg ${pathname === href && "font-semibold"}`}>
+                  <motion.span
+                    // Create delay on text so that it doesnt jump
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      delay: 0.2,
+                    }}
+                    className={`text-lg ${
+                      pathname === href && "font-semibold"
+                    }`}
+                  >
                     {title}
                   </motion.span>
                 )}

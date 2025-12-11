@@ -10,23 +10,27 @@ import { doubleBookingType, isoTimeRange } from "@/lib/types"
 
 const FilterSection = ({
   setDoubleBookings,
-  setSelectedTimeRange,
   setSelectedIsoRange,
   setSelectedFloor,
   selectedFloor,
+  setStartTime,
+  setEndTime,
+  startTime,
+  endTime,
 }: {
   // Contains the roomtype or undefined
   setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
-  setSelectedTimeRange?: Dispatch<SetStateAction<string | undefined>>
   setSelectedIsoRange?: Dispatch<SetStateAction<isoTimeRange | undefined>>
   setSelectedFloor: Dispatch<SetStateAction<string | null>>
   selectedFloor: string | null
+  setStartTime: Dispatch<SetStateAction<string | null>>
+  setEndTime: Dispatch<SetStateAction<string | null>>
+  startTime: string | null
+  endTime: string | null
 }) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(
     new Date().toISOString()
   )
-  const [startTime, setStartTime] = useState<string | null>("8:00")
-  const [endTime, setEndTime] = useState<string | null>("16:00")
 
   const buildIsoRange = () => {
     if (!selectedDate || !startTime || !endTime) {
@@ -89,15 +93,6 @@ const FilterSection = ({
     checkIfCanBook()
   }, [selectedDate, selectedFloor, startTime, endTime])
 
-  useEffect(() => {
-    if (!startTime || !endTime) {
-      setSelectedTimeRange?.(undefined)
-      return
-    }
-
-    setSelectedTimeRange?.(`${startTime}-${endTime}`)
-  }, [startTime, endTime, setSelectedTimeRange])
-
   return (
     <div className="w-full bg-white rounded-3xl border border-gray-300 p-3 lg:py-5 lg:px-8">
       <h2 className="text-xl font-semibold">Filter</h2>
@@ -132,7 +127,11 @@ const FilterSection = ({
           <p className="text-ek-text-grey text-sm">
             Vælg det ønskede tidspunkt
           </p>
-          <EndTimeSelect startTime={startTime} endTime={endTime} setEndTime={setEndTime} />
+          <EndTimeSelect
+            startTime={startTime}
+            endTime={endTime}
+            setEndTime={setEndTime}
+          />
         </div>
       </section>
     </div>

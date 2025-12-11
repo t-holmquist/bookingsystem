@@ -13,13 +13,12 @@ export default function Home() {
   const [doubleBookings, setDoubleBookings] = useState<
     doubleBookingType | undefined
   >()
-  const [selectedTimeRange, setSelectedTimeRange] = useState<
-    string | undefined
-  >(undefined)
   const [selectedIsoRange, setSelectedIsoRange] = useState<
     isoTimeRange | undefined
   >(undefined)
   const [selectedFloor, setSelectedFloor] = useState<string | null>("Sal. 3")
+  const [startTime, setStartTime] = useState<string | null>("8:00")
+  const [endTime, setEndTime] = useState<string | null>("16:00")
 
   const [refreshKey, setRefreshKey] = useState(0) // Loading state for refreshing the rooms. Better than a boolean because it will force a re-render of the component.
 
@@ -30,10 +29,13 @@ export default function Home() {
         {/* Filter section */}
         <FilterSection
           setDoubleBookings={setDoubleBookings}
-          setSelectedTimeRange={setSelectedTimeRange}
           setSelectedIsoRange={setSelectedIsoRange}
           selectedFloor={selectedFloor}
           setSelectedFloor={setSelectedFloor}
+          startTime={startTime}
+          setStartTime={setStartTime}
+          endTime={endTime}
+          setEndTime={setEndTime}
         />
         {/* Room result list section */}
         <section className="p-3 lg:py-5 lg:px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
@@ -50,7 +52,8 @@ export default function Home() {
           {/* Roomtable gets the double bookings so that it can filter out those rooms with those room_ids and only show every other room */}
           <RoomTable
             doubleBookings={doubleBookings}
-            timeRange={selectedTimeRange}
+            startTime={startTime}
+            endTime={endTime}
             timeRangeIso={selectedIsoRange}
             selectedFloor={selectedFloor}
             refreshKey={refreshKey}

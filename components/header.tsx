@@ -1,36 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import ActiveIndicator from "./ui/activeIndicator"
-import { getProfileData } from "@/data/supabase"
-import { profileDataType } from "@/lib/types"
+import { useProfile } from "@/providers/profile-provider"
 import { motion } from "motion/react"
 import { Loader } from "@mantine/core"
 
 const Header = ({ title }: { title: string }) => {
-  // User data tracked by hook
-  const [profileData, setProfileData] = useState<profileDataType | undefined>(
-    undefined
-  )
-
-  // Get the user profile information on mount including the profile image
-  useEffect(() => {
-    const getUserData = async () => {
-      // Get the profile data from supabase. Returns only one object from the authorized user
-      const userData = await getProfileData()
-
-      if (userData) {
-        setProfileData(userData)
-      }
-    }
-
-    getUserData()
-  }, [])
+  const { profileData } = useProfile()
 
   return (
-    <div
-      className="space-y-2"
-    >
+    <div className="space-y-2">
       <motion.h1
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
