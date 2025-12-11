@@ -8,6 +8,7 @@ import { deleteBooking, getUserBookings } from "@/data/supabase"
 import { formatDate, formatTime } from "@/utils/timeAndDateFormat"
 import { AuthContext } from "@/providers/auth-provider"
 import { motion } from "motion/react"
+import { bookingWithRoomType } from "@/lib/types"
 
 export function BookingTable() {
   const [opened, { open, close }] = useDisclosure(false) // Modal state
@@ -20,16 +21,7 @@ export function BookingTable() {
     time: string
     id: number
   } | null>(null) // Modal booking cancellation info
-  const [userBookings, setUserBookings] = useState<Array<{
-    id: number
-    starting_at: string
-    ending_at: string
-    room_id: string
-    meetingsrooms: {
-      floor: number
-      room_size: number
-    }
-  }> | null>(null) // User specific bookings
+  const [userBookings, setUserBookings] = useState<bookingWithRoomType | null>(null) // User specific bookings
 
   // Gets the user session to pass the user id it to getUserBookings
   const user = useContext(AuthContext)
@@ -227,11 +219,15 @@ export function BookingTable() {
             {!isLoadingBookings &&
               userBookings &&
               userBookings.map(
-                ({ id, room_id, meetingsrooms, starting_at, ending_at }) => {
+                ({ id, room_id, meetingsrooms, starting_at, created_at, ending_at }) => {
                   // Format the time range as H:MM-H:MM
                   const startTime = formatTime(starting_at)
                   const endTime = formatTime(ending_at)
                   const timeRange = `${startTime}-${endTime}`
+
+                  // Check if room is newly booked and then update ui
+                  const createdDate = new Date(created_at)
+                  const isNewBooking = createdDate > new Date(Date.now() - 1000 * 60 * 5) // Check if the booking is less than 5 minutes old
 
                   // Format the date as DD:MM:YYYY
                   const bookingDate = formatDate(starting_at)
@@ -245,7 +241,12 @@ export function BookingTable() {
                       }}
                       key={id}
                     >
-                      <Table.Td>{room_id}</Table.Td>
+                      <Table.Td>
+                        {room_id}
+                        {isNewBooking && (
+                          <span className="bg-ek-blue text-white p-1 ml-2 rounded-sm">Ny</span>
+                        )}
+                        </Table.Td>
                       <Table.Td>{`${meetingsrooms.room_size} personer`}</Table.Td>
                       <Table.Td>{timeRange}</Table.Td>
                       <Table.Td>{bookingDate}</Table.Td>

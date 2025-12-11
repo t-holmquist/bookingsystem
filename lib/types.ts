@@ -38,11 +38,12 @@ export type isoTimeRange = {
 export type bookingWithRoomType = Array<{
   id: number
   starting_at: string
+  created_at: string
   ending_at: string
   room_id: string
-  meetingsrooms: Array<{
+  meetingsrooms: {
     room_size: number
     floor: number
-  }>
+  }
 }>
 

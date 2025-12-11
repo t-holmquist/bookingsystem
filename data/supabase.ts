@@ -108,6 +108,7 @@ export const getUserBookings = async (user_id: string) => {
       `
       id,
       starting_at,
+      created_at,
       ending_at,
       room_id,
       meetingsrooms!inner (
