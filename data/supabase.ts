@@ -60,10 +60,9 @@ export const getAvailableRooms = async (
 ): Promise<roomType> => {
   const supabase = SupabaseClient()
 
-  // Extract unique room_ids from doubleBookings
-  // Array.from() creates a new array from the doubleBookings array and converts it to a set to remove duplicates
+  // Extract room_ids from doubleBookings. Return an array of room_ids.
   const doubleBookedRoomIds = doubleBookings
-    ? Array.from(new Set(doubleBookings.map((booking) => booking.room_id)))
+    ? doubleBookings.map((booking) => booking.room_id)
     : []
 
   // Fetch rooms from the meetingsroom table, optionally filtered by floor
