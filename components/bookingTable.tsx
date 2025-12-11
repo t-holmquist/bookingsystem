@@ -155,7 +155,7 @@ export function BookingTable() {
       {/* Tabel that displays all the roomdata */}
       <Table.ScrollContainer
         minWidth={500}
-        maxHeight={350}
+        maxHeight={450}
         scrollAreaProps={{ offsetScrollbars: false }}
       >
         <Table stickyHeader>

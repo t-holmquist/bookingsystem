@@ -4,10 +4,10 @@ import React from 'react'
 
 const Bookinger = () => {
   return (
-    <div className="flex flex-col h-screen gap-10 bg-ek-bg p-8">
+    <div className="flex flex-col h-screen gap-10 bg-ek-bg p-3 lg:p-8">
       <Header title="Dine bookinger"/>
       {/* Room result list section */}
-      <section className="py-5 px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full">
+      <section className="p-3 lg:py-5 lg:px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full">
           <h2 className="text-xl font-semibold">
             Lokale visning
           </h2>
