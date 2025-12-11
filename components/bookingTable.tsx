@@ -2,11 +2,11 @@
 
 import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Toast from "./ui/toast"
 import { deleteBooking, getUserBookings } from "@/data/supabase"
 import { formatDate, formatTime } from "@/utils/timeAndDateFormat"
-import { AuthContext } from "@/providers/auth-provider"
+import { useProfile } from "@/providers/profile-provider"
 import { motion } from "motion/react"
 import { bookingWithRoomType } from "@/lib/types"
 
@@ -21,10 +21,12 @@ export function BookingTable() {
     time: string
     id: number
   } | null>(null) // Modal booking cancellation info
-  const [userBookings, setUserBookings] = useState<bookingWithRoomType | null>(null) // User specific bookings
+  const [userBookings, setUserBookings] = useState<bookingWithRoomType | null>(
+    null
+  ) // User specific bookings
 
   // Gets the user session to pass the user id it to getUserBookings
-  const user = useContext(AuthContext)
+  const { user } = useProfile()
 
   // Opens modal with cancellation info
   const handleOpenBooking = ({
@@ -133,7 +135,7 @@ export function BookingTable() {
             <strong>Tidspunkt</strong> {cancelInfo?.time}
           </div>
         </div>
-          <div className="flex gap-2">
+        <div className="flex gap-2">
           <Button
             loading={isDeleting}
             color="red"
@@ -219,7 +221,14 @@ export function BookingTable() {
             {!isLoadingBookings &&
               userBookings &&
               userBookings.map(
-                ({ id, room_id, meetingsrooms, starting_at, created_at, ending_at }) => {
+                ({
+                  id,
+                  room_id,
+                  meetingsrooms,
+                  starting_at,
+                  created_at,
+                  ending_at,
+                }) => {
                   // Format the time range as H:MM-H:MM
                   const startTime = formatTime(starting_at)
                   const endTime = formatTime(ending_at)
@@ -227,7 +236,8 @@ export function BookingTable() {
 
                   // Check if room is newly booked and then update ui
                   const createdDate = new Date(created_at)
-                  const isNewBooking = createdDate > new Date(Date.now() - 1000 * 60 * 5) // Check if the booking is less than 5 minutes old
+                  const isNewBooking =
+                    createdDate > new Date(Date.now() - 1000 * 60 * 5) // Check if the booking is less than 5 minutes old
 
                   // Format the date as DD:MM:YYYY
                   const bookingDate = formatDate(starting_at)
@@ -244,9 +254,11 @@ export function BookingTable() {
                       <Table.Td>
                         {room_id}
                         {isNewBooking && (
-                          <span className="bg-ek-blue text-white p-1 ml-2 rounded-sm">Ny</span>
+                          <span className="bg-ek-blue text-white p-1 ml-2 rounded-sm">
+                            Ny
+                          </span>
                         )}
-                        </Table.Td>
+                      </Table.Td>
                       <Table.Td>{`${meetingsrooms.room_size} personer`}</Table.Td>
                       <Table.Td>{timeRange}</Table.Td>
                       <Table.Td>{bookingDate}</Table.Td>

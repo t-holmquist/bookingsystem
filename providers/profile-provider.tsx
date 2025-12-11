@@ -3,15 +3,17 @@
 import { getProfileData } from "@/data/supabase"
 import { profileDataType } from "@/lib/types"
 import { SupabaseClient } from "@/utils/supabaseClient"
+import { User } from "@supabase/supabase-js"
 import { createContext, useContext, useEffect, useState } from "react"
-import { AuthContext } from "./auth-provider"
 
 export const ProfileContext = createContext<{
   profileData: profileDataType | undefined
   userImageUrl: string
+  user: User | null | undefined
 }>({
   profileData: undefined,
   userImageUrl: "",
+  user: undefined,
 })
 
 export const ProfileProvider = ({
@@ -19,13 +21,46 @@ export const ProfileProvider = ({
 }: {
   children: React.ReactNode
 }) => {
+  // State triangulation. Undefined = loading, null = no session, User = user exist
+  // Can be used to base loading states upon
+  const [user, setUser] = useState<User | null | undefined>(undefined)
   const [profileData, setProfileData] = useState<profileDataType | undefined>(
     undefined
   )
   const [userImageUrl, setUserImageUrl] = useState("")
   const supabase = SupabaseClient()
-  const user = useContext(AuthContext)
 
+  // Manage auth state
+  useEffect(() => {
+    let mounted = true
+
+    const fetchInitialUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (mounted) {
+        setUser(user ?? null)
+      }
+    }
+
+    fetchInitialUser()
+
+    // Listen for auth state changes, so that we can update the user state when the user logs in or out
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) {
+        setUser(session?.user ?? null)
+      }
+    })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  // Fetch profile data when user changes
   useEffect(() => {
     // Clear profile data when user logs out
     if (!user) {
@@ -65,7 +100,7 @@ export const ProfileProvider = ({
   }, [user?.id]) // Refetch when user changes
 
   return (
-    <ProfileContext.Provider value={{ profileData, userImageUrl }}>
+    <ProfileContext.Provider value={{ profileData, userImageUrl, user }}>
       {children}
     </ProfileContext.Provider>
   )

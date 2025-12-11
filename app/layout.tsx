@@ -9,7 +9,6 @@ import {
   createTheme,
   mantineHtmlProps,
 } from "@mantine/core"
-import { AuthProvider } from "@/providers/auth-provider"
 import { ProfileProvider } from "@/providers/profile-provider"
 
 export const metadata = {
@@ -46,13 +45,11 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <AuthProvider>
-        <ProfileProvider>
-          <body>
-            <MantineProvider theme={theme}>{children}</MantineProvider>
-          </body>
-        </ProfileProvider>
-      </AuthProvider>
+      <ProfileProvider>
+        <body>
+          <MantineProvider theme={theme}>{children}</MantineProvider>
+        </body>
+      </ProfileProvider>
     </html>
   )
 }
