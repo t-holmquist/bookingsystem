@@ -39,15 +39,17 @@ export default function Home() {
         <section className="p-3 lg:py-5 lg:px-8 space-y-8 bg-white border border-gray-300 rounded-3xl w-full h-full">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Ledige lokaler</h2>
-            <Button variant="light" size="xs" onClick={() => setRefreshKey(prev => prev + 1)}>
+            <Button
+              variant="light"
+              size="xs"
+              onClick={() => setRefreshKey((prev) => prev + 1)}
+            >
               <RefreshCcw size={20} />
             </Button>
           </div>
           {/* Roomtable gets the double bookings so that it can filter out those rooms with those room_ids and only show every other room */}
-          {/* It can update the double booking when a user has made a booking, so that it adds the booked room to the array of double bookings */}
           <RoomTable
             doubleBookings={doubleBookings}
-            setDoubleBookings={setDoubleBookings}
             timeRange={selectedTimeRange}
             timeRangeIso={selectedIsoRange}
             selectedFloor={selectedFloor}

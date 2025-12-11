@@ -13,11 +13,10 @@ import {
 } from "@/lib/types"
 import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Toast from "./ui/toast"
 
 export function RoomTable({
-  setDoubleBookings,
   doubleBookings,
   timeRange,
   timeRangeIso,
@@ -25,7 +24,6 @@ export function RoomTable({
   refreshKey,
 }: {
   // Contains the doubleBookingType or undefined
-  setDoubleBookings: Dispatch<SetStateAction<doubleBookingType | undefined>>
   doubleBookings: doubleBookingType | undefined
   timeRange?: string
   refreshKey: number
@@ -243,7 +241,7 @@ export function RoomTable({
               </Table.Tr>
             )}
             {!isLoadingRooms &&
-            // Render the rooms that are available based on the user role. If the user is a student, only show the rooms that are meetingsrooms (including 'mødelokale')
+              // Render the rooms that are available based on the user role. If the user is a student, only show the rooms that are meetingsrooms (including 'mødelokale')
               filteredRooms.map(({ room_id, room_size }, index: number) => {
                 const roomLabel = room_id ?? "-"
                 const capacityLabel = room_size ? `${room_size} personer` : "-"
