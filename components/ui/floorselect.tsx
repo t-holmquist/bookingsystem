@@ -1,7 +1,7 @@
 import { useProfile } from "@/providers/profile-provider"
 import { Select } from "@mantine/core"
 import { ChevronDown } from "lucide-react"
-import { Dispatch, SetStateAction, useMemo } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 export default function FloorSelect({
   selectedFloor,
@@ -13,13 +13,13 @@ export default function FloorSelect({
   const { profileData } = useProfile()
 
   // Disables floorselect if user is student, since only Sal. 3 is allowed
-  const disabled = useMemo(() => profileData?.role === "student", [profileData])
+  const disabledState = profileData?.role === "student"
 
   return (
     <Select
       leftSection={<ChevronDown size={15} />}
       placeholder="Vælg sal"
-      disabled={disabled}
+      disabled={!profileData ? true : disabledState} // If profileData is not loaded, disable the select
       // Display no icon on the left
       rightSection={<></>}
       withCheckIcon={false}

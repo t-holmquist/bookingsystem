@@ -1,6 +1,6 @@
 "use client"
 
-import { Dispatch, SetStateAction, useMemo } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { DatePickerInput, DatesProvider } from "@mantine/dates"
 import { Calendar } from "lucide-react"
 // Import the danish locale using the dayjs library that Mantine uses under the hood
@@ -16,18 +16,17 @@ export default function DatePicker({
 }) {
   const { profileData } = useProfile()
 
-  // Compute maximum date based on user role
-  const maximumDate = useMemo(() => {
-    if (!profileData) return null
-
+  // Compute maximum date based on user role, if profileData is not loaded, set maximumDate to null
+  let maximumDate: Date | null = null
+  if (profileData) {
     const maxDate = new Date()
     // If the user is a teacher, set the maxDate 180 days from now
     // If a student you can see 30 days into the future
     maxDate.setDate(
       maxDate.getDate() + (profileData.role === "teacher" ? 180 : 30)
     )
-    return maxDate
-  }, [profileData])
+    maximumDate = maxDate
+  }
 
   return (
     // Provides the danish date strings
