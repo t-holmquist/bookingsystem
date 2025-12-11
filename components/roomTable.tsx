@@ -1,7 +1,16 @@
 "use client"
 
-import { createBooking, getAvailableRooms } from "@/data/supabase"
-import { doubleBookingType, isoTimeRange, roomType } from "@/lib/types"
+import {
+  createBooking,
+  getAvailableRooms,
+  getProfileData,
+} from "@/data/supabase"
+import {
+  doubleBookingType,
+  isoTimeRange,
+  profileDataType,
+  roomType,
+} from "@/lib/types"
 import { Badge, Button, Loader, Modal, Paper, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
@@ -33,6 +42,10 @@ export function RoomTable({
     capacity: string
     availability: string
   } | null>(null)
+  // User data tracked by hook
+  const [profileData, setProfileData] = useState<profileDataType | undefined>(
+    undefined
+  )
 
   const handleOpenBooking = ({
     roomId,
@@ -112,7 +125,27 @@ export function RoomTable({
     }
   }
 
-  const availabilityText = timeRange ?? "-"
+  // Get the user profile information to ONLY render rooms that are meetingsrooms if the user is a student
+  useEffect(() => {
+    const getUserData = async () => {
+      // Get the profile data from supabase. Returns only one object from the authorized user
+      const userData = await getProfileData()
+
+      if (userData) {
+        setProfileData(userData)
+      }
+    }
+
+    getUserData()
+  }, [])
+
+  // Filter the rooms based on the user role
+  // If the user is a student, only show the rooms that are meetingsrooms (including 'mødelokale')
+  // Default to student filter when profileData is not yet loaded to prevent students from seeing all rooms
+  const filteredRooms =
+    !profileData || profileData?.role === "student"
+      ? availableRooms.filter((room) => room.room_id?.includes("Mødelokale"))
+      : availableRooms
 
   return (
     <Paper
@@ -149,7 +182,7 @@ export function RoomTable({
           <Button
             loading={isBooking}
             onClick={handleCreateBooking}
-            disabled={!timeRangeIso}
+            disabled={!timeRangeIso} // Disable button if no time range is selected
           >
             Book
           </Button>
@@ -202,7 +235,7 @@ export function RoomTable({
                 </Table.Td>
               </Table.Tr>
             )}
-            {!isLoadingRooms && availableRooms.length === 0 && (
+            {!isLoadingRooms && filteredRooms.length === 0 && (
               <Table.Tr>
                 <Table.Td colSpan={5} style={{ textAlign: "center" }}>
                   Ingen ledige lokaler matcher dine filtre.
@@ -210,7 +243,8 @@ export function RoomTable({
               </Table.Tr>
             )}
             {!isLoadingRooms &&
-              availableRooms.map(({ room_id, room_size }, index: number) => {
+            // Render the rooms that are available based on the user role. If the user is a student, only show the rooms that are meetingsrooms (including 'mødelokale')
+              filteredRooms.map(({ room_id, room_size }, index: number) => {
                 const roomLabel = room_id ?? "-"
                 const capacityLabel = room_size ? `${room_size} personer` : "-"
                 const isBookable = Boolean(room_id)
@@ -219,7 +253,7 @@ export function RoomTable({
                   <Table.Tr key={`${room_id ?? index}-${index}`}>
                     <Table.Td>{roomLabel}</Table.Td>
                     <Table.Td>{capacityLabel}</Table.Td>
-                    <Table.Td>{availabilityText}</Table.Td>
+                    <Table.Td>{timeRange}</Table.Td>
                     <Table.Td>
                       <Badge radius="xs" color="green" variant="light">
                         Ledig
@@ -232,7 +266,7 @@ export function RoomTable({
                           handleOpenBooking({
                             roomId: room_id,
                             capacity: capacityLabel,
-                            availability: availabilityText,
+                            availability: timeRange ? timeRange : "",
                           })
                         }
                         size="sm"
