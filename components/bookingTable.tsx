@@ -117,7 +117,7 @@ export function BookingTable() {
       style={{ overflow: "hidden", minHeight: 350 }}
     >
       <Toast
-        message="Booking deleted succesfully"
+        message="Bookingen er slettet"
         showToast={showToast}
         setShowToast={setShowToast}
       />

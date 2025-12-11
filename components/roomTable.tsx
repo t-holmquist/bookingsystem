@@ -154,7 +154,7 @@ export function RoomTable({
       style={{ overflow: "hidden", minHeight: 350 }}
     >
       <Toast
-        message="Room booked succesfully"
+        message="Lokalet er booket"
         showToast={showToast}
         setShowToast={setShowToast}
       />
