@@ -38,14 +38,18 @@ const FilterSection = ({
     }
 
     // Create a date object from the selected date (this will be in local timezone)
+    // Selected date format: YYYY-MM-DD. Example: 2025-12-12
     const dateObj = new Date(selectedDate)
     const year = dateObj.getFullYear()
     const month = dateObj.getMonth()
     const day = dateObj.getDate()
 
+    // Input: 08:00
+    // Output: 2025-12-12T08:00:00.000Z
     const parseTime = (time: string) => {
       const [hours, minutes] = time.split(":")
       // Create a Date object in the user's local timezone
+      // Combines the year, month & day from selectedDate (datePicker) with the hours, minutes & seconds from startTime and endTime (startTimeSelector and endTimeSelector)
       const localDate = new Date(
         year,
         month,
@@ -68,6 +72,7 @@ const FilterSection = ({
   // Each time a filter changes then call supabase to check if there are any bookings on every room with the specific filters set
   useEffect(() => {
     const checkIfCanBook = async () => {
+      // Build the iso range (start and end time amd date). ISO format: YYYY-MM-DDTHH:MM:SS.SSSZ. Example: 2025-12-12T08:00:00.000Z
       const isoRange = buildIsoRange()
 
       if (!isoRange) {

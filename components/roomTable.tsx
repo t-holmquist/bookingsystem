@@ -226,10 +226,9 @@ export function RoomTable({
               filteredRooms.map(({ room_id, room_size }, index: number) => {
                 const roomLabel = room_id ?? "-"
                 const capacityLabel = room_size ? `${room_size} personer` : "-"
-                const isBookable = Boolean(room_id)
 
                 return (
-                  <Table.Tr key={`${room_id ?? index}-${index}`}>
+                  <Table.Tr key={room_id}>
                     <Table.Td>{roomLabel}</Table.Td>
                     <Table.Td>{capacityLabel}</Table.Td>
                     <Table.Td>{timeRange}</Table.Td>
@@ -249,7 +248,6 @@ export function RoomTable({
                           })
                         }
                         size="sm"
-                        disabled={!isBookable}
                       >
                         Book
                       </Button>
