@@ -80,12 +80,12 @@ export const getAvailableRooms = async (
 
   // If there are no double-booked rooms, return all rooms
   if (doubleBookedRoomIds.length === 0) {
-    return (data ?? []) as roomType
+    return data as roomType
   }
 
   // Filter out rooms that have room_ids in the doubleBookedRoomIds array
   // If the room_id is not in the doubleBookedRoomIds array, then the room is available
-  const availableRooms = (data ?? []).filter(
+  const availableRooms = data.filter(
     (room) => !doubleBookedRoomIds.includes(room.room_id)
   )
 
