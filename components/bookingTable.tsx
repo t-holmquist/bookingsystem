@@ -54,6 +54,7 @@ export function BookingTable() {
       return
     }
 
+    // This is a safe guard to ensure the bookings are not cancelled if the user changes or the component unmounts
     let isCancelled = false
 
     const getBookings = async () => {
@@ -229,18 +230,20 @@ export function BookingTable() {
                   created_at,
                   ending_at,
                 }) => {
-                  // Format the time range as H:MM-H:MM
-                  const startTime = formatTime(starting_at)
-                  const endTime = formatTime(ending_at)
-                  const timeRange = `${startTime}-${endTime}`
+                  // Format the start and end time
+                  const startTime = formatTime(starting_at) // Input: 2025-12-12T10:00:00.000Z Output: 10:00
+                  const endTime = formatTime(ending_at) // Input: 2025-12-12T11:00:00.000Z Output: 11:00
+                  const timeRange = `${startTime}-${endTime}` // Output: 10:00-11:00
 
                   // Check if room is newly booked and then update ui
                   const createdDate = new Date(created_at)
                   const isNewBooking =
                     createdDate > new Date(Date.now() - 1000 * 60 * 5) // Check if the booking is less than 5 minutes old
+                    // Example: 2025-12-12T10:00:00.000Z > 2025-12-12T09:55:00.000Z is true. After 10 minutes: 2025-12-12T10:00:00.000Z >  2025-12-12T10:05:00.000Z which is false
 
                   // Format the date as DD:MM:YYYY
                   const bookingDate = formatDate(starting_at)
+                  // Example: 2025-12-12T10:00:00.000Z Output: 12/12/2025
 
                   return (
                     // Each row is an individual motion.tr component
