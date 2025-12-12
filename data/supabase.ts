@@ -27,13 +27,13 @@ export const checkBookings = async ({
   const doubleBookings: doubleBookingType = []
 
   // Query the bookings table to find overlapping bookings
-  // A booking overlaps if: booking.start <= our.end AND booking.end >= our.start
+  // A booking overlaps if: booking.start < our.end AND booking.end > our.start
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
-    // Booking starts before or at our end time
+    // Is user's end time later than db start time? (endTime > starting_at)
     .lt("starting_at", endTime)
-    // Booking ends at or after our start time
+    // Is user's start time earlier than db end time? (startTime < ending_at)
     .gt("ending_at", startTime)
 
   if (error) {
@@ -71,6 +71,7 @@ export const getAvailableRooms = async (
     query = query.eq("floor", selectedFloor)
   }
 
+  // Fetch the rooms
   const { data, error } = await query
 
   if (error) {
