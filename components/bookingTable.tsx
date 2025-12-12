@@ -253,6 +253,7 @@ export function BookingTable() {
                         visible: { opacity: 1, y: 0 },
                       }}
                       key={id}
+                      className="border-b border-gray-100"
                     >
                       <Table.Td>
                         {room_id}

@@ -228,7 +228,7 @@ export function RoomTable({
                 const capacityLabel = room_size ? `${room_size} personer` : "-"
 
                 return (
-                  <Table.Tr key={room_id}>
+                  <Table.Tr key={room_id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                     <Table.Td>{roomLabel}</Table.Td>
                     <Table.Td>{capacityLabel}</Table.Td>
                     <Table.Td>{timeRange}</Table.Td>
